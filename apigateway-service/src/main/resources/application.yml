@@ -6,25 +6,54 @@ spring:
     name: apigateway-service
   cloud:
     gateway:
-      default-filters:
-        - name: GlobalFilter
-        args:
-          baseMessage: Hello Spring Cloud Gateway Global Filter
-          preLogger: true
-          postLogger: true
+#      default-filters:
+#        - name: GlobalFilter
+#        args:
+#          baseMessage: Hello Spring Cloud Gateway Global Filter
+#          preLogger: true
+#          postLogger: true
       routes:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/sign-in
-            - Method=POST
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - name: Path
+              args:
+                patterns: /user-service/**
+#            - name: Method
+#              args:
+#                methods:
+#                  - POST
+#          filters:
+#            - name: CircuitBreaker
+#              args:
+#                name: recruitlist
+#                fallbackUri: forward:/fallbacks/7
+#            - name: RewritePath
+#              args:
+#                regexp: /user-service/(?<path>.*)
+#                replacement: /$\{path}
+#            - RemoveRequestHeader=Cookie
+#            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+#        - id: post-service
+#          uri: lb://POST-SERVICE
+#          predicates:
+#            - Path=/post-service/
+#            - Method=POST
+#          filters:
+#            - RemoveRequestHeader-Cookie
+#            - RewritePath=/post-service/(?<segment>.*), /$\{segment}
+#        - id: upload-service
+#            uri: lb://UPLOAD-SERVICE
+#            predicates:
+#              - Path=/upload-service/
+#              - Method=POST
+#            filters:
+#              - RemoveRequestHeader-Cookie
+#              - RewritePath=/upload-service/(?<segment>.*), /$\{segment}
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8765/eureka
+      defaultZone: http://localhost:8761/eureka
