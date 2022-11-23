@@ -8,6 +8,15 @@ spring:
     config:
       server:
         git:
-          uri:
-        native:
-          search-locations: 
+          uri: https://github.com/MangKyu/spring-cloud-config-sample
+          search-paths: test-cloud-config-file/**
+          default-label: master
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
