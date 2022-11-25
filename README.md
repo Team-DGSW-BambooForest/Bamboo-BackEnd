@@ -4,7 +4,11 @@
 - java
 - spring boot
 - jpa
-- mybatis
+- redis
+- retrofit2
+- spring security
+- jwt
+- mysql
 - spring cloud
 
 
@@ -12,7 +16,7 @@
 ### config
 ``` yaml
 server:
-  port: 8888
+  port: ${PORT}
 
 spring:
   application:
@@ -29,7 +33,7 @@ spring:
 ### discovery
 ```yaml
 server:
-  port: 8765
+  port: ${PORT}
 
 spring:
   application:
@@ -44,48 +48,49 @@ eureka:
 ### apigateway
 ``` yaml
 server:
-  port: 8000
+  port: ${PORT}
 
 spring:
   application:
     name: apigateway-service
   cloud:
     gateway:
-      default-filters:
-        - name: GlobalFilter
-        args:
-          baseMessage: Hello Spring Cloud Gateway Global Filter
-          preLogger: true
-          postLogger: true
       routes:
-        - id: user-service
-          uri: lb://USER-SERVICE
+        - id: ${SERVICE-NAME}
+          uri: lb://${SERVICE-NAME}
           predicates:
-            - Path=/user-service/sign-in
-            - Method=POST
+            - name: Path
+              args:
+                patterns: ${PATH}
           filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - name: CircuitBreaker
+              args:
+                name: recruitlist
+                fallbackUri: forward:/fallbacks/7
+            - name: RewritePath
+              args:
+                regexp: /${PATH}/(?<path>.*)
+                replacement: /$\{path}
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8765/eureka
+      defaultZone: http://localhost:${DISCOVERY_PORT}/eureka
       
 ```
 
 ### service
 ``` yaml
 server:
-  port: 8080
+  port: ${PORT}
 
 spring:
   application:
-    name: user-service
+    name: ${SERVICE_NAME}
   datasource:
-    url: jdbc:mysql://localhost:3306/bamboo?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/{DB_NAME}?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: {DB_USERNAME}
     password: {DB_PASSWORD}
@@ -95,13 +100,17 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+  
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
 
 eureka:
   instance:
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    instance-id: ${INSTANCE_ID}
   client:
     service-url:
-      defaultZone: http://127.0.0.1:8765/eureka
+      defaultZone: http://127.0.0.1:${DISCOVERY_PORT}/eureka
     fetch-registry: true
     register-with-eureka: true
 ```
