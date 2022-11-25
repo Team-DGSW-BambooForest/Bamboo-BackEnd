@@ -19,6 +19,12 @@ spring:
             - name: Path
               args:
                 patterns: /user-service/**
+        - id: test-server
+          uri: http://localhost:2222
+          predicates:
+            - name: Path
+              args:
+                patterns: /test-server/**
 #            - name: Method
 #              args:
 #                methods:
