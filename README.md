@@ -5,7 +5,7 @@
 - spring boot
 - jpa
 - redis
-- retrofit2
+- restTemplate
 - spring security
 - jwt
 - mysql
