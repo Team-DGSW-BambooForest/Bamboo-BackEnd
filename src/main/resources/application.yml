@@ -5,10 +5,10 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://localhost:3306/bamboo?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/bamboo
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: jyj10241103*
+    password: Ajiseok!3676
 
   jpa:
     show-sql: false
@@ -16,11 +16,17 @@ spring:
     hibernate:
       ddl-auto: update
 
-eureka:
-  instance:
-    instance-id: user-service
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-    fetch-registry: true
-    register-with-eureka: true
+#eureka:
+#  instance:
+#    instance-id: user-service
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
+#    fetch-registry: true
+#    register-with-eureka: true
+
+app:
+  secret: test  #accessToken 암호화
+  refresh-secret: test  #refreshToken 암호화
+  client-id: 695708fb9dae4801993f0ec68cad7c620d0701eea5444d199c00b39ed67f5a7c
+  client-secret: c53e942274cc4e41977271cf3c32b41463f9e6c48e684f92b58564686ec5243b
