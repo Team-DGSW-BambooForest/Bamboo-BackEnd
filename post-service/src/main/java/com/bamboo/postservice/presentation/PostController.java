@@ -6,6 +6,7 @@ import com.bamboo.postservice.presentation.dto.request.PostRequest;
 import com.bamboo.postservice.presentation.dto.request.SearchRequest;
 import com.bamboo.postservice.service.PostService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -24,7 +25,7 @@ public class PostController {
     }
 
     @PostMapping("/post")
-    public void creatPost(@RequestBody PostRequest request) {
+    public void creatPost(@RequestBody @Validated PostRequest request) {
         postService.creatPost(request);
     }
 
