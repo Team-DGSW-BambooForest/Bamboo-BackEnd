@@ -81,7 +81,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostListRo getPostByTitle(SearchRequest request) {
-        Pageable pageable = PageRequest.of(request.getPage()-1, 4, Sort.Direction.ASC, "postId");
+        Pageable pageable = PageRequest.of(request.getPage()-1, 10, Sort.Direction.ASC, "postId");
 
         Page<Post> posts = postRepository.findByTitleContaining(request.getKeyword(),pageable);
 
@@ -93,10 +93,10 @@ public class PostService {
     }
     @Transactional(readOnly = true)
     public PostListRo getPostByHashTag(SearchRequest request) {
-        List<HashTag> hashTagContaining = hashTagRepository.findByHashTagContaining(request.getKeyword());
+        Pageable pageable = PageRequest.of(request.getPage()-1, 10, Sort.Direction.ASC, "post_id");
+        List<Long> hashTagContaining = hashTagRepository.findDistinctByHashTagContaining(request.getKeyword(),pageable);
 
-        List<Post> posts = hashTagContaining.stream().map(it ->
-                postRepository.findByPostId(it.getPost().getPostId())).distinct().collect(toList());
+        List<Post> posts = hashTagContaining.stream().map(postRepository::findByPostId).collect(toList());
 
         List<PostRo> postList = posts.stream().map(it ->
                 new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findByPost_PostId(it.getPostId()))
