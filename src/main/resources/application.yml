@@ -8,7 +8,7 @@ spring:
     url: jdbc:mysql://localhost:3306/bamboo
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: Ajiseok!3676
+    password: r3i5e
 
   jpa:
     show-sql: false
@@ -30,3 +30,10 @@ app:
   refresh-secret: test  #refreshToken 암호화
   client-id: 695708fb9dae4801993f0ec68cad7c620d0701eea5444d199c00b39ed67f5a7c
   client-secret: c53e942274cc4e41977271cf3c32b41463f9e6c48e684f92b58564686ec5243b
+  auth-url: http://dauth.b1nd.com/api
+  open-api-url: http://open.dodam.b1nd.com/api
+jwt:
+  access:
+    expire: 1000 * 60 * 60 * 24
+  refresh:
+    expire: 1000 * 60 * 60 * 24 * 7

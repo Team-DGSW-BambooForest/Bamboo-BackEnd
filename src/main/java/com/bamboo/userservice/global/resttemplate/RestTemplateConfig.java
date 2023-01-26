@@ -1,6 +1,6 @@
 package com.bamboo.userservice.global.resttemplate;
 
-import com.bamboo.userservice.global.type.EndPoint;
+import com.bamboo.userservice.global.config.AppProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +14,7 @@ import java.time.Duration;
 public class RestTemplateConfig {
 
     private final RestTemplateBuilder restTemplateBuilder;
+    private final AppProperties appProperties;
 
     private RestTemplate restTemplate(final String endpoint) {
         return restTemplateBuilder.rootUri(endpoint)
@@ -25,11 +26,11 @@ public class RestTemplateConfig {
 
     @Bean
     public RestTemplate authTemplate() {
-        return restTemplate(EndPoint.AUTH.getEndPoint());
+        return restTemplate(appProperties.getAuthUrl());
     }
 
     @Bean
     public RestTemplate openTemplate() {
-        return restTemplate(EndPoint.OPEN_API.getEndPoint());
+        return restTemplate(appProperties.getOpenApiUrl());
     }
 }

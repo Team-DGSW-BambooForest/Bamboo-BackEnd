@@ -1,11 +1,11 @@
 package com.bamboo.userservice.domain.auth.presentation.dto.request;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor @NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LoginRequestDto {
     private String code;
 }

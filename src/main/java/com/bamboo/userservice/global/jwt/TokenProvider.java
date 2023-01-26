@@ -4,11 +4,12 @@ package com.bamboo.userservice.global.jwt;
 import com.bamboo.userservice.domain.user.UserEntity;
 import com.bamboo.userservice.domain.user.domain.repository.UserRepository;
 import com.bamboo.userservice.global.config.AppProperties;
+import com.bamboo.userservice.global.enums.JwtType;
 import com.bamboo.userservice.global.exception.GlobalException;
-import com.bamboo.userservice.global.type.JwtAuth;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +18,20 @@ import java.util.Date;
 @Service
 @RequiredArgsConstructor
 public class TokenProvider {
-    private static final long JWT_ACCESS_EXPIRE = 1000 * 60 * 60 * 24;  //1일
-    private static final long JWT_REFRESH_EXPIRE = 1000 * 60 * 60 * 24 * 7;  //7일
+    @Value("${jwt.access.expire}")
+    private static long JWT_ACCESS_EXPIRE;  //1일
+    @Value("${jwt.refresh.expire}")
+    private static long JWT_REFRESH_EXPIRE;  //7일
     private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256; //해쉬암호 HS256
     private final AppProperties appProperties;
     private final UserRepository userRepository;
 
-    //AccessToken, RefreshToken 생성
-    public String generateToken(Integer userId, JwtAuth jwtAuth) {
+    public String generateToken(Integer userId, JwtType jwtType) {
         Date expiration = new Date();
-        expiration = (jwtAuth == JwtAuth.ACCESS_TOKEN)
+        expiration = (jwtType == JwtType.ACCESS_TOKEN)
                 ? new Date(expiration.getTime() + JWT_ACCESS_EXPIRE)
                 : new Date(expiration.getTime() + JWT_REFRESH_EXPIRE);
-        String secretKey = (jwtAuth == JwtAuth.ACCESS_TOKEN)
+        String secretKey = (jwtType == JwtType.ACCESS_TOKEN)
                 ? appProperties.getSecret()
                 : appProperties.getRefreshSecret();
 
@@ -38,17 +40,17 @@ public class TokenProvider {
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(jwtAuth.toString())
+                .setSubject(jwtType.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(expiration)
                 .signWith(SIGNATURE_ALGORITHM, secretKey)
                 .compact();
     }
 
-    private Claims parseToken(String token, JwtAuth jwtAuth) {
+    private Claims parseToken(String token, JwtType jwtType) {
         try {
             return Jwts.parser()
-                    .setSigningKey((jwtAuth == JwtAuth.ACCESS_TOKEN)
+                    .setSigningKey((jwtType == JwtType.ACCESS_TOKEN)
                             ? appProperties.getSecret()
                             : appProperties.getRefreshSecret())
                     .parseClaimsJws(token)
@@ -66,23 +68,22 @@ public class TokenProvider {
 
     public UserEntity validateToken(String token) {
         return userRepository.findById(
-                        Integer.valueOf(parseToken(token, JwtAuth.ACCESS_TOKEN)
+                        Integer.valueOf(parseToken(token, JwtType.ACCESS_TOKEN)
                                 .get("userId")
                                 .toString())
                 )
                 .orElseThrow(UserEntity.NotFoundException::new);
     }
 
-    //refreshToken으로 AccessToken발급
     public String refreshToken(String refreshToken) {
         if (refreshToken == null || refreshToken.trim().isEmpty()) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "토큰이 존재하지 않습니다.");
         }
 
-        Claims claims = parseToken(refreshToken, JwtAuth.REFRESH_TOKEN);
+        Claims claims = parseToken(refreshToken, JwtType.REFRESH_TOKEN);
         UserEntity member = userRepository
                 .findById(Integer.parseInt(claims.get("userId").toString()))
                 .orElseThrow(UserEntity.NotFoundException::new);
-        return generateToken(member.getUserId(), JwtAuth.ACCESS_TOKEN);
+        return generateToken(member.getUserId(), JwtType.ACCESS_TOKEN);
     }
 }

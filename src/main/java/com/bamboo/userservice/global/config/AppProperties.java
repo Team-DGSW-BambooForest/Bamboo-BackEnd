@@ -12,4 +12,7 @@ public class AppProperties {
     private String refreshSecret;
     private String clientId;
     private String clientSecret;
+    private String authUrl;
+    private String openApiUrl;
+
 }

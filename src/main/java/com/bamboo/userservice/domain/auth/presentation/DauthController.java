@@ -2,7 +2,7 @@ package com.bamboo.userservice.domain.auth.presentation;
 
 import com.bamboo.userservice.domain.auth.presentation.dto.request.LoginRequestDto;
 import com.bamboo.userservice.domain.auth.presentation.dto.response.LoginResponseDto;
-import com.bamboo.userservice.domain.auth.service.DauthService;
+import com.bamboo.userservice.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class DauthController {
-    private final DauthService dauthService;
+    private final AuthService dauthService;
 
-    @PostMapping("/login")
+    @PostMapping("/login/dauth")
     public LoginResponseDto Login(@RequestBody LoginRequestDto loginRequestDto){
         return dauthService.login(loginRequestDto);
     }

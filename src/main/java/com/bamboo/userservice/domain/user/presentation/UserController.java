@@ -18,7 +18,7 @@ public class UserController {
 
     @AuthToken
     @GetMapping
-    public UserResponseDto test(@RequestAttribute UserEntity user){
+    public UserResponseDto findUser(@RequestAttribute UserEntity user){
         return new UserResponseDto(user);
     }
 }
