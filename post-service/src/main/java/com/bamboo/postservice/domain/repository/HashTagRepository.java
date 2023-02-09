@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface HashTagRepository extends JpaRepository<HashTag, Long> {
-    List<TagRo> findByPost_PostId(Long id);
+    List<TagRo> findAllByPost_PostId(Long id);
 
     @Query(value = "select distinct post_id from hash_tag where hash_tag like %?%", nativeQuery = true)
     List<Long> findDistinctByHashTagContaining (@Param("hash_tag") String hashtag, Pageable pageable);

@@ -1,6 +1,6 @@
 package com.bamboo.postservice.service;
 
-
+import com.bamboo.postservice.Client.UserFeinClient;
 import com.bamboo.postservice.domain.HashTag;
 import com.bamboo.postservice.domain.Post;
 import com.bamboo.postservice.domain.repository.HashTagRepository;
@@ -10,37 +10,49 @@ import com.bamboo.postservice.presentation.dto.reponse.PostListRo;
 import com.bamboo.postservice.presentation.dto.reponse.PostRo;
 import com.bamboo.postservice.presentation.dto.reponse.TagRo;
 import com.bamboo.postservice.presentation.dto.request.PostRequest;
-import com.bamboo.postservice.presentation.dto.request.SearchRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class PostService {
     private final PostRepository postRepository;
     private final HashTagRepository hashTagRepository;
 
+    private final UserFeinClient userFeinClient;
+
+
     @Transactional
-    public void creatPost(PostRequest request) {
+    public ResponseEntity<?> creatPost(PostRequest request) {
+
+        String author;
+
+        try {
+            author = userFeinClient.getUser().getName();
+        } catch (Exception e) {
+            author = "익명의 대소고인";
+        }
+
+
         Post post = Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
+                .author(author)
                 .hashTagList(new ArrayList<>())
                 .build();
+
         postRepository.save(post);
 
         List<HashTag> hashTagList = Arrays.stream(request.getHashtags())
@@ -51,16 +63,21 @@ public class PostService {
 
         hashTagRepository.saveAll(hashTagList);
 
-        IntStream.range(0, request.getHashtags().length).mapToObj(hashTagList::get).forEach(post::addHashTag);
+        int bound = request.getHashtags().length;
+        for (int i = 0; i < bound; i++) {
+            HashTag hashTag = hashTagList.get(i);
+            post.addHashTag(hashTag);
+        }
+
+        return ResponseEntity.status(201).body("게시글이 성공적으로 게시되엇습니다");
     }
     @Transactional(readOnly = true)
     public PostRo getPostById(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> {
-                    throw PostNotFoundException.EXPECTION;
-                });
-
-        List<TagRo> hashTagList = hashTagRepository.findByPost_PostId(id)
+                .orElseThrow(() ->
+                    PostNotFoundException.EXPECTION
+                );
+        List<TagRo> hashTagList = hashTagRepository.findAllByPost_PostId(id)
                 .stream().map(it -> new TagRo(it.getTagId(), it.getHashTag()))
                 .collect(toList());
 
@@ -73,39 +90,42 @@ public class PostService {
         Page<Post> posts = postRepository.findAll(pageable);
 
         List<PostRo> postList = posts.stream().map(it ->
-                    new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findByPost_PostId(it.getPostId()))
+                    new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
                 ).collect(toList());
 
         return postListRobulider(postList);
     }
 
     @Transactional(readOnly = true)
-    public PostListRo getPostByTitle(SearchRequest request) {
-        Pageable pageable = PageRequest.of(request.getPage()-1, 10, Sort.Direction.ASC, "postId");
+    public PostListRo getPostByTitle(int page, String title) {
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "postId");
 
-        Page<Post> posts = postRepository.findByTitleContaining(request.getKeyword(),pageable);
+        Page<Post> posts = postRepository.findAllByTitleContaining(title, pageable);
 
         List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findByPost_PostId(it.getPostId()))
+                new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
                 ).collect(toList());
 
-        return postListRobulider(postList);
+        return PostListRo.builder()
+                .list(postList)
+                .build();
     }
     @Transactional(readOnly = true)
-    public PostListRo getPostByHashTag(SearchRequest request) {
-        Pageable pageable = PageRequest.of(request.getPage()-1, 10, Sort.Direction.ASC, "post_id");
-        List<Long> hashTagContaining = hashTagRepository.findDistinctByHashTagContaining(request.getKeyword(),pageable);
+    public PostListRo getPostByHashTag(int page, String tag) {
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "post_id");
 
-        List<Post> posts = hashTagContaining.stream().map(postRepository::findByPostId).collect(toList());
+        List<Long> hashTagContaining = hashTagRepository.findDistinctByHashTagContaining(tag, pageable);
+
+        List<Post> posts = hashTagContaining.stream().map(postRepository::findByPostId).toList();
 
         List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findByPost_PostId(it.getPostId()))
-        ).collect(toList());
+                new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+        ).toList();
 
         return postListRobulider(postList);
     }
 
-    PostListRo postListRobulider(List<PostRo> postRoList) {
+    private PostListRo postListRobulider(List<PostRo> postRoList) {
         return  PostListRo.builder()
                 .list(postRoList)
                 .build();

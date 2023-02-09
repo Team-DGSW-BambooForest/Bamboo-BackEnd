@@ -1,10 +1,13 @@
 package com.bamboo.postservice.presentation.dto.request;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostRequest {
     @NotBlank(message = "제목을 입렵해주세요")
     private String title;

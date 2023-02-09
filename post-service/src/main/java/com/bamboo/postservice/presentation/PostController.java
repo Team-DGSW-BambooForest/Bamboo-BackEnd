@@ -3,30 +3,21 @@ package com.bamboo.postservice.presentation;
 import com.bamboo.postservice.presentation.dto.reponse.PostListRo;
 import com.bamboo.postservice.presentation.dto.reponse.PostRo;
 import com.bamboo.postservice.presentation.dto.request.PostRequest;
-import com.bamboo.postservice.presentation.dto.request.SearchRequest;
 import com.bamboo.postservice.service.PostService;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-
-
 @RestController
+@RequestMapping("/post")
+@RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
 
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
-
-    @GetMapping("info")
-    public String info(@Value("${server.port}") String port) {
-        return "Post Service Port : " + port;
-    }
-
-    @PostMapping("/post")
-    public void creatPost(@RequestBody @Validated PostRequest request) {
-        postService.creatPost(request);
+    @PostMapping("/create")
+    public ResponseEntity<?> creatPost(@RequestBody @Validated PostRequest request) {
+        return postService.creatPost(request);
     }
 
     @GetMapping("/{id}")
@@ -35,18 +26,20 @@ public class PostController {
     }
 
     @GetMapping("/list")
-    public PostListRo getALlPost(@RequestParam("page") Integer page) {
+    public PostListRo getALlPost(@RequestParam(value = "page", defaultValue = "1") Integer page) {
         return postService.getAllPost(page);
     }
 
-    @GetMapping("/title")
-    public PostListRo getPostByTitle(@RequestBody SearchRequest request) {
-        return postService.getPostByTitle(request);
+    @GetMapping("/title/{title}")
+    public PostListRo getPostByTitle(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                     @PathVariable("title") String title) {
+        return postService.getPostByTitle(page, title);
     }
 
-    @GetMapping("/tag")
-    public PostListRo getPostByHashtag(@RequestBody SearchRequest request) {
-         return postService.getPostByHashTag(request);
+    @GetMapping("/tag/{tag}")
+    public PostListRo getPostByHashtag(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                       @PathVariable("tag") String tag) {
+         return postService.getPostByHashTag(page, tag);
     }
 
 }

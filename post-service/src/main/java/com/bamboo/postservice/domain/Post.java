@@ -1,6 +1,7 @@
 package com.bamboo.postservice.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,6 +20,7 @@ public class Post {
 
     private String author;
 
+    private String title;
     @Lob
     private String content;
 
@@ -32,6 +34,13 @@ public class Post {
         getHashTagList().add(hashTag);
     }
 
-
-
+    @Builder
+    public Post(Long postId, String author, String title, String content, LocalDateTime createdAt, List<HashTag> hashTagList) {
+        this.postId = postId;
+        this.author = author;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.hashTagList = hashTagList;
+    }
 }
