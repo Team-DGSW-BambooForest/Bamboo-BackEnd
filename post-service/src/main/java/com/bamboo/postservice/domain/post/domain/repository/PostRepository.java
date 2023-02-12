@@ -1,6 +1,6 @@
-package com.bamboo.postservice.domain.repository;
+package com.bamboo.postservice.domain.post.domain.repository;
 
-import com.bamboo.postservice.domain.Post;
+import com.bamboo.postservice.domain.post.domain.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

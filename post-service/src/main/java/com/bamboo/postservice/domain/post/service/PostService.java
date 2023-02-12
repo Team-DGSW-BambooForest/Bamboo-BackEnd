@@ -1,15 +1,14 @@
-package com.bamboo.postservice.service;
+package com.bamboo.postservice.domain.post.service;
 
-import com.bamboo.postservice.Client.UserFeinClient;
-import com.bamboo.postservice.domain.HashTag;
-import com.bamboo.postservice.domain.Post;
-import com.bamboo.postservice.domain.repository.HashTagRepository;
-import com.bamboo.postservice.domain.repository.PostRepository;
-import com.bamboo.postservice.exception.PostNotFoundException;
-import com.bamboo.postservice.presentation.dto.reponse.PostListRo;
-import com.bamboo.postservice.presentation.dto.reponse.PostRo;
-import com.bamboo.postservice.presentation.dto.reponse.TagRo;
-import com.bamboo.postservice.presentation.dto.request.PostRequest;
+import com.bamboo.postservice.domain.post.domain.HashTag;
+import com.bamboo.postservice.domain.post.domain.Post;
+import com.bamboo.postservice.domain.post.domain.repository.HashTagRepository;
+import com.bamboo.postservice.domain.post.domain.repository.PostRepository;
+import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostListRo;
+import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostRo;
+import com.bamboo.postservice.domain.post.presentation.dto.reponse.TagRo;
+import com.bamboo.postservice.domain.post.presentation.dto.request.PostRequest;
+import com.bamboo.postservice.global.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,20 +30,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final HashTagRepository hashTagRepository;
 
-    private final UserFeinClient userFeinClient;
-
-
     @Transactional
-    public ResponseEntity<?> creatPost(PostRequest request) {
-
-        String author;
-
-        try {
-            author = userFeinClient.getUser().getName();
-        } catch (Exception e) {
-            author = "익명의 대소고인";
-        }
-
+    public ResponseEntity<?> creatPost(PostRequest request, String author) {
 
         Post post = Post.builder()
                 .title(request.getTitle())

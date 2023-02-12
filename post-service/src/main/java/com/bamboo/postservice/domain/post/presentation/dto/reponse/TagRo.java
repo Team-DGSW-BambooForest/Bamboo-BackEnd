@@ -1,4 +1,4 @@
-package com.bamboo.postservice.presentation.dto.reponse;
+package com.bamboo.postservice.domain.post.presentation.dto.reponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

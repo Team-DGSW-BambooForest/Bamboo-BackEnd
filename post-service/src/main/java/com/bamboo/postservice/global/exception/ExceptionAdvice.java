@@ -1,4 +1,4 @@
-package com.bamboo.postservice.exception;
+package com.bamboo.postservice.global.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

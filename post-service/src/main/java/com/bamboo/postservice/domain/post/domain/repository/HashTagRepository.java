@@ -1,7 +1,7 @@
-package com.bamboo.postservice.domain.repository;
+package com.bamboo.postservice.domain.post.domain.repository;
 
-import com.bamboo.postservice.domain.HashTag;
-import com.bamboo.postservice.presentation.dto.reponse.TagRo;
+import com.bamboo.postservice.domain.post.domain.HashTag;
+import com.bamboo.postservice.domain.post.presentation.dto.reponse.TagRo;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

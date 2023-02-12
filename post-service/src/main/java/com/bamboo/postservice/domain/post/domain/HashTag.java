@@ -1,4 +1,4 @@
-package com.bamboo.postservice.domain;
+package com.bamboo.postservice.domain.post.domain;
 
 import lombok.AccessLevel;
 import lombok.Builder;

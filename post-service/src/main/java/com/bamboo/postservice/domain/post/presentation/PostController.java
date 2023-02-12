@@ -1,9 +1,10 @@
-package com.bamboo.postservice.presentation;
+package com.bamboo.postservice.domain.post.presentation;
 
-import com.bamboo.postservice.presentation.dto.reponse.PostListRo;
-import com.bamboo.postservice.presentation.dto.reponse.PostRo;
-import com.bamboo.postservice.presentation.dto.request.PostRequest;
-import com.bamboo.postservice.service.PostService;
+import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostListRo;
+import com.bamboo.postservice.global.annotation.AuthToken;
+import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostRo;
+import com.bamboo.postservice.domain.post.presentation.dto.request.PostRequest;
+import com.bamboo.postservice.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
-
+    @AuthToken
     @PostMapping("/create")
-    public ResponseEntity<?> creatPost(@RequestBody @Validated PostRequest request) {
-        return postService.creatPost(request);
+    public ResponseEntity<?> creatPost(@RequestBody @Validated PostRequest request,
+                                       @RequestAttribute String author)
+    {
+        return postService.creatPost(request, author);
     }
 
     @GetMapping("/{id}")

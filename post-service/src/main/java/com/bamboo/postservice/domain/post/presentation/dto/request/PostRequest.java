@@ -1,4 +1,4 @@
-package com.bamboo.postservice.presentation.dto.request;
+package com.bamboo.postservice.domain.post.presentation.dto.request;
 
 import lombok.AccessLevel;
 import lombok.Getter;
