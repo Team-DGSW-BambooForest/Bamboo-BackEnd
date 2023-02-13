@@ -1,6 +1,7 @@
-package com.bamboo.postservice.domain;
+package com.bamboo.postservice.domain.post.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,10 @@ public class HashTag {
         this.post = post;
     }
 
+    @Builder
+    public HashTag(Long tagId, String hashTag, Post post) {
+        this.tagId = tagId;
+        this.hashTag = hashTag;
+        this.post = post;
+    }
 }
