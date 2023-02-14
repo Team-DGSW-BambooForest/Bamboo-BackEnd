@@ -1,14 +1,13 @@
 server:
-  port: 8080
-
+  port: ${PORT}
 spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://localhost:3306/bamboo?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/bamboo
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: jyj10241103*
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     show-sql: false
@@ -24,3 +23,16 @@ eureka:
       defaultZone: http://localhost:8761/eureka
     fetch-registry: true
     register-with-eureka: true
+
+app:
+  secret: ${SECRET}  #accessToken 암호화
+  refresh-secret: ${REFRESH_SECRET}  #refreshToken 암호화
+  client-id: ${CLIENT_ID}
+  client-secret: ${CLIENT_SECRET}
+  auth-url: ${AUTH}
+  open-api-url: ${OPEN_API}
+jwt:
+  access:
+    expire: ${ACCESS_EXPIRE}
+  refresh:
+    expire: ${REFRESH_EXPIRE}
