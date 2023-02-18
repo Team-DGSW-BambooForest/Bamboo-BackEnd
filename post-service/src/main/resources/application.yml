@@ -6,13 +6,14 @@ spring:
     name: post
   profiles:
     active: config
-  datasource:
-    url: jdbc:mysql://localhost:3306/bamboo?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: {DB_USERNAME}
-    password: {DB_PASSWORD}
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:http://52.79.253.78:8888
+  datasource:
+    url: jdbc:mysql://test.cufa7phrrtky.ap-northeast-2.rds.amazonaws.com:3306/bamboo
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: bamboobackend
+    password: Bamboobackend12!!
+
 
   jpa:
     show-sql: false
@@ -22,9 +23,10 @@ spring:
 
 eureka:
   instance:
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    instance-id: post-service
   client:
     service-url:
-      defaultZone: http://127.0.0.1:8765/eureka
+      defaultZone: http://52.79.253.78:8761/eureka
     fetch-registry: true
     register-with-eureka: true
+
