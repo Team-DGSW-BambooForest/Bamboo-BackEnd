@@ -4,10 +4,12 @@ import com.bamboo.postservice.domain.post.domain.HashTag;
 import com.bamboo.postservice.domain.post.domain.Post;
 import com.bamboo.postservice.domain.post.domain.repository.HashTagRepository;
 import com.bamboo.postservice.domain.post.domain.repository.PostRepository;
+import com.bamboo.postservice.domain.post.domain.status.PostStatus;
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostListRo;
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostRo;
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.TagRo;
 import com.bamboo.postservice.domain.post.presentation.dto.request.PostRequest;
+import com.bamboo.postservice.global.exception.PostNotAllowedException;
 import com.bamboo.postservice.global.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,6 +39,7 @@ public class PostService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .author(author)
+                .status(PostStatus.HOLD)
                 .hashTagList(new ArrayList<>())
                 .build();
 
@@ -59,11 +62,16 @@ public class PostService {
         return ResponseEntity.status(201).body("게시글이 성공적으로 게시되엇습니다");
     }
     @Transactional(readOnly = true)
-    public PostRo getPostById(Long id) {
+    public PostRo getPostById(Long id){
         Post post = postRepository.findById(id)
                 .orElseThrow(() ->
                     PostNotFoundException.EXPECTION
                 );
+
+        if (post.getStatus().equals(PostStatus.NOT_ALLOWED) || post.getStatus().equals(PostStatus.HOLD)) {
+            throw PostNotAllowedException.EXPECTION;
+        }
+
         List<TagRo> hashTagList = hashTagRepository.findAllByPost_PostId(id)
                 .stream().map(it -> new TagRo(it.getTagId(), it.getHashTag()))
                 .collect(toList());
@@ -87,7 +95,9 @@ public class PostService {
     public PostListRo getPostByTitle(int page, String title) {
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "postId");
 
-        Page<Post> posts = postRepository.findAllByTitleContaining(title, pageable);
+        List<Post> posts = postRepository.findAllByTitleContaining(title, pageable)
+                .stream().filter(it -> it.getStatus().equals(PostStatus.ALLOWED))
+                .collect(toList());
 
         List<PostRo> postList = posts.stream().map(it ->
                 new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
@@ -103,11 +113,13 @@ public class PostService {
 
         List<Long> hashTagContaining = hashTagRepository.findDistinctByHashTagContaining(tag, pageable);
 
-        List<Post> posts = hashTagContaining.stream().map(postRepository::findByPostId).toList();
+        List<Post> posts = hashTagContaining.stream().map(postRepository::findByPostId)
+                .filter(i -> i.getStatus().equals(PostStatus.ALLOWED))
+                .collect(toList());
 
         List<PostRo> postList = posts.stream().map(it ->
                 new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
-        ).toList();
+        ).collect(toList());
 
         return postListRobulider(postList);
     }
