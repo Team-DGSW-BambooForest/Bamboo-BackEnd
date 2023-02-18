@@ -1,13 +1,13 @@
 server:
-  port: ${PORT}
+  port: 7003
 spring:
   application:
     name: admin-service
   datasource:
     url: jdbc:mysql://localhost:3306/bamboo
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    username: root
+    password: Ajiseok!3676
 
   jpa:
     show-sql: false
@@ -24,3 +24,5 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
 
+jwt:
+  secret-key: sdflkjasdfiofklwenfew10u9231890u23kldsfa89u0r2kwef90we32rj32rhioewf89sdfh32ui32rfehwoifjgiosdiov8923uoiklsdnfy89weutowjkehgy8923
