@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class DauthController {
     private final AuthService dauthService;
 
-    @PostMapping("/login/dauth")
+    @PostMapping("/dauth/login")
     public LoginResponseDto Login(@RequestBody LoginRequestDto loginRequestDto){
         return dauthService.login(loginRequestDto);
     }
