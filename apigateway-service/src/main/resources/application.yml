@@ -1,5 +1,5 @@
 server:
-  port: 8000
+  port: 8080
 
 spring:
   application:
@@ -18,13 +18,13 @@ spring:
           predicates:
             - name: Path
               args:
-                patterns: /user-service/**
-        - id: test-server
-          uri: http://localhost:2222
+                patterns: /user/**
+        - id: post-service
+          uri: lib://POST-SERVICE
           predicates:
             - name: Path
               args:
-                patterns: /test-server/**
+                patterns: /post/**
 #            - name: Method
 #              args:
 #                methods:
@@ -62,4 +62,4 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://52.79.253.78:8761/eureka

@@ -1,5 +1,6 @@
 package com.bamboo.postservice.domain.post.domain;
 
+import com.bamboo.postservice.domain.post.domain.status.PostStatus;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +25,8 @@ public class Post {
     @Lob
     private String content;
 
+    private PostStatus status;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -35,11 +38,12 @@ public class Post {
     }
 
     @Builder
-    public Post(Long postId, String author, String title, String content, LocalDateTime createdAt, List<HashTag> hashTagList) {
+    public Post(Long postId, String author, String title, String content, PostStatus status, LocalDateTime createdAt, List<HashTag> hashTagList) {
         this.postId = postId;
         this.author = author;
         this.title = title;
         this.content = content;
+        this.status = status;
         this.createdAt = createdAt;
         this.hashTagList = hashTagList;
     }
