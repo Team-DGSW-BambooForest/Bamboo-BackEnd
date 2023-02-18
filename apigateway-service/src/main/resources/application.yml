@@ -14,13 +14,13 @@ spring:
 #          postLogger: true
       routes:
         - id: user-service
-          uri: lb://USER-SERVICE
+          uri: http://43.201.6.71:7000
           predicates:
             - name: Path
               args:
                 patterns: /user/**
         - id: post-service
-          uri: lib://POST-SERVICE
+          uri: http://43.201.6.71:7001
           predicates:
             - name: Path
               args:
