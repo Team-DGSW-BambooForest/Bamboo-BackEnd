@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/apigateway-service" />
     <file type="web" url="file://$PROJECT_DIR$/post-service" />
     <file type="web" url="file://$PROJECT_DIR$/upload-service" />
     <file type="web" url="file://$PROJECT_DIR$/user-service" />
