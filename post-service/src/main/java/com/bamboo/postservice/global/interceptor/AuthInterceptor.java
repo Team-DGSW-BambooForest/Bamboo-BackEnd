@@ -19,9 +19,12 @@ public class AuthInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) {
 
-        if(!(handler instanceof HandlerMethod handlerMethod)) {
+        if (!(handler instanceof HandlerMethod)) {
             return true;
         }
+
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+
         if(!(handlerMethod.getMethod().isAnnotationPresent(AuthToken.class))) {
             return true;
         }
