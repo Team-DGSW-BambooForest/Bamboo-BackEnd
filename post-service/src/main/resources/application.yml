@@ -7,7 +7,7 @@ spring:
   profiles:
     active: config
   config:
-    import: optional:configserver:http://52.79.253.78:8888
+    import: optional:configserver:http://13.209.33.18:8888
   datasource:
     url: jdbc:mysql://test.cufa7phrrtky.ap-northeast-2.rds.amazonaws.com:3306/bamboo
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -26,7 +26,7 @@ eureka:
     instance-id: post-service
   client:
     service-url:
-      defaultZone: http://52.79.253.78:8761/eureka
+      defaultZone: http://13.209.33.18:8761/eureka
     fetch-registry: true
     register-with-eureka: true
 
