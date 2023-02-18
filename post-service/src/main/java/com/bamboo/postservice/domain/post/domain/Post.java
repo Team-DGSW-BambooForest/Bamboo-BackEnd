@@ -25,6 +25,7 @@ public class Post {
     @Lob
     private String content;
 
+    @Enumerated(EnumType.STRING)
     private PostStatus status;
 
     @CreationTimestamp

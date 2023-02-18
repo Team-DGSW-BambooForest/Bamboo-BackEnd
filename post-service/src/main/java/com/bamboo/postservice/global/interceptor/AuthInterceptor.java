@@ -3,12 +3,15 @@ package com.bamboo.postservice.global.interceptor;
 import com.bamboo.postservice.global.jwt.JwtUtil;
 import com.bamboo.postservice.global.annotation.AuthToken;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Component
 @RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
 
@@ -31,12 +34,12 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         String token = jwtUtil.extract(request, "Bearer");
         if(token.equals("")) {
-            request.setAttribute("user", "익명의 대소고인");
-            throw new IllegalArgumentException("anonymous");
+            request.setAttribute("author", "익명의 대소고인");
+            return true;
         }
 
         String userName = jwtUtil.getSubject(token);
-        request.setAttribute("user", userName);
+        request.setAttribute("author", userName);
 
         return true;
     }

@@ -12,6 +12,7 @@ import com.bamboo.postservice.domain.post.presentation.dto.request.PostRequest;
 import com.bamboo.postservice.global.exception.PostNotAllowedException;
 import com.bamboo.postservice.global.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
