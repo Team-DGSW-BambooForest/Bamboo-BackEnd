@@ -1,13 +1,18 @@
 server:
-  port: ${PORT}
+  port: 7000
+
 spring:
   application:
-    name: user-service
+    name: user
+  profiles:
+    active: config
+  config:
+    import: optional:configserver:http://52.79.253.78:8888
   datasource:
-    url: jdbc:mysql://localhost:3306/bamboo
+    url: jdbc:mysql://test.cufa7phrrtky.ap-northeast-2.rds.amazonaws.com:3306/bamboo
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    username: bamboobackend
+    password: Bamboobackend12!!
 
   jpa:
     show-sql: false
@@ -20,19 +25,6 @@ eureka:
     instance-id: user-service
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://52.79.253.78:8761/eureka
     fetch-registry: true
     register-with-eureka: true
-
-app:
-  secret: ${SECRET}  #accessToken 암호화
-  refresh-secret: ${REFRESH_SECRET}  #refreshToken 암호화
-  client-id: ${CLIENT_ID}
-  client-secret: ${CLIENT_SECRET}
-  auth-url: ${AUTH}
-  open-api-url: ${OPEN_API}
-jwt:
-  access:
-    expire: ${ACCESS_EXPIRE}
-  refresh:
-    expire: ${REFRESH_EXPIRE}
