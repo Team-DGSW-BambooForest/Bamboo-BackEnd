@@ -1,5 +1,6 @@
 package com.bamboo.postservice.global.interceptor;
 
+import com.bamboo.postservice.global.jwt.JwtType;
 import com.bamboo.postservice.global.jwt.JwtUtil;
 import com.bamboo.postservice.global.annotation.AuthToken;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,8 @@ public class AuthInterceptor implements HandlerInterceptor {
             request.setAttribute("author", "익명의 대소고인");
             return true;
         }
+
+        jwtUtil.validateToken(token);
 
         String userName = jwtUtil.getSubject(token);
         request.setAttribute("author", userName);
