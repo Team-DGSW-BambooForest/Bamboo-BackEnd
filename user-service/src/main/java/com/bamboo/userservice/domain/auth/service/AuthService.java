@@ -58,11 +58,11 @@ public class AuthService {
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         DOpenApiDto data = getCodeToDodamInfo(loginRequestDto.getCode());
         UserEntity userEntity = userService.save(data);
-        Integer userId = userEntity.getUserId();
+        String name = userEntity.getName();
         return LoginResponseDto.builder()
                 .userEntity(userEntity)
-                .token(tokenProvider.generateToken(userId, JwtType.ACCESS_TOKEN))
-                .refreshToken(tokenProvider.generateToken(userId, JwtType.REFRESH_TOKEN))
+                .token(tokenProvider.generateToken(name, JwtType.ACCESS_TOKEN))
+                .refreshToken(tokenProvider.generateToken(name, JwtType.REFRESH_TOKEN))
                 .build();
     }
 }

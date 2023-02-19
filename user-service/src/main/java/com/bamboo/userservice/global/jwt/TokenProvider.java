@@ -9,13 +9,10 @@ import com.bamboo.userservice.global.enums.JwtType;
 import com.bamboo.userservice.global.exception.GlobalException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenProvider {
@@ -25,7 +22,7 @@ public class TokenProvider {
     private final AppProperties appProperties;
     private final UserRepository userRepository;
 
-    public String generateToken(Integer userId, JwtType jwtType) {
+    public String generateToken(String name, JwtType jwtType) {
         Date expiration = new Date();
         expiration = (jwtType == JwtType.ACCESS_TOKEN)
                 ? new Date(expiration.getTime() + jwtProperties.getAccessExpire())
@@ -35,8 +32,7 @@ public class TokenProvider {
                 : appProperties.getRefreshSecret();
 
         Claims claims = Jwts.claims();
-        claims.put("userId", userId);
-
+        claims.put("name", name);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(jwtType.toString())
@@ -66,9 +62,9 @@ public class TokenProvider {
     }
 
     public UserEntity validateToken(String token) {
-        return userRepository.findById(
-                        Integer.valueOf(parseToken(token, JwtType.ACCESS_TOKEN)
-                                .get("userId")
+        return userRepository.findByName(
+                        (parseToken(token, JwtType.ACCESS_TOKEN)
+                                .get("name")
                                 .toString())
                 )
                 .orElseThrow(UserEntity.NotFoundException::new);
@@ -81,8 +77,8 @@ public class TokenProvider {
 
         Claims claims = parseToken(refreshToken, JwtType.REFRESH_TOKEN);
         UserEntity member = userRepository
-                .findById(Integer.parseInt(claims.get("userId").toString()))
+                .findByName(claims.get("name").toString())
                 .orElseThrow(UserEntity.NotFoundException::new);
-        return generateToken(member.getUserId(), JwtType.ACCESS_TOKEN);
+        return generateToken(member.getName(), JwtType.ACCESS_TOKEN);
     }
 }
