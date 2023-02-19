@@ -14,5 +14,4 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Post findByPostId(long id);
 
     Page<Post> findAllByStatus(PostStatus status, Pageable pageable);
-
 }

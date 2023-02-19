@@ -51,4 +51,10 @@ public class PostController {
          return postService.getPostByHashTag(page, tag);
     }
 
+    @GetMapping("/list/hold")
+    @ApiOperation(value = "허용 되지 않은 게시글 조회")
+    public PostListRo getUnauthorizedPost(@RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return postService.getUnauthorizedPost(page);
+    }
+
 }

@@ -117,6 +117,19 @@ public class PostService {
         return postListRobulider(postList);
     }
 
+    @Transactional(readOnly = true)
+    public PostListRo getUnauthorizedPost(int page) {
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "postId");
+
+        Page<Post> posts = postRepository.findAllByStatus(PostStatus.HOLD, pageable);
+
+        List<PostRo> postList = posts.stream().map(it ->
+                new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+        ).collect(toList());
+
+        return postListRobulider(postList);
+    }
+
     private PostListRo postListRobulider(List<PostRo> postRoList) {
         return  PostListRo.builder()
                 .list(postRoList)
