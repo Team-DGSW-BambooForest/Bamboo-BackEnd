@@ -6,6 +6,7 @@ import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostRo;
 import com.bamboo.postservice.domain.post.presentation.dto.request.PostRequest;
 import com.bamboo.postservice.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

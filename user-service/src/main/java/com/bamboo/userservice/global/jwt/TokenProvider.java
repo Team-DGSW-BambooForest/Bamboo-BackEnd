@@ -4,6 +4,7 @@ package com.bamboo.userservice.global.jwt;
 import com.bamboo.userservice.domain.user.UserEntity;
 import com.bamboo.userservice.domain.user.domain.repository.UserRepository;
 import com.bamboo.userservice.global.config.AppProperties;
+import com.bamboo.userservice.global.config.JwtProperties;
 import com.bamboo.userservice.global.enums.JwtType;
 import com.bamboo.userservice.global.exception.GlobalException;
 import io.jsonwebtoken.*;
@@ -18,10 +19,8 @@ import java.util.Date;
 @Service
 @RequiredArgsConstructor
 public class TokenProvider {
-    @Value("${jwt.access.expire}")
-    private static long JWT_ACCESS_EXPIRE;  //1일
-    @Value("${jwt.refresh.expire}")
-    private static long JWT_REFRESH_EXPIRE;  //7일
+
+    private final JwtProperties jwtProperties;
     private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256; //해쉬암호 HS256
     private final AppProperties appProperties;
     private final UserRepository userRepository;
@@ -29,8 +28,8 @@ public class TokenProvider {
     public String generateToken(Integer userId, JwtType jwtType) {
         Date expiration = new Date();
         expiration = (jwtType == JwtType.ACCESS_TOKEN)
-                ? new Date(expiration.getTime() + JWT_ACCESS_EXPIRE)
-                : new Date(expiration.getTime() + JWT_REFRESH_EXPIRE);
+                ? new Date(expiration.getTime() + jwtProperties.getJWT_ACCESS_EXPIRE())
+                : new Date(expiration.getTime() + jwtProperties.getJWT_REFRESH_EXPIRE());
         String secretKey = (jwtType == JwtType.ACCESS_TOKEN)
                 ? appProperties.getSecret()
                 : appProperties.getRefreshSecret();
