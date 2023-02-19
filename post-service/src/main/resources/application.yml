@@ -13,13 +13,15 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: bamboobackend
     password: Bamboobackend12!!
-
-
   jpa:
     show-sql: false
     generate-ddl: true
     hibernate:
       ddl-auto: update
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
 
 eureka:
   instance:
@@ -29,4 +31,3 @@ eureka:
       defaultZone: http://13.209.33.18:8761/eureka
     fetch-registry: true
     register-with-eureka: true
-
