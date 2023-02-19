@@ -28,8 +28,8 @@ public class TokenProvider {
     public String generateToken(Integer userId, JwtType jwtType) {
         Date expiration = new Date();
         expiration = (jwtType == JwtType.ACCESS_TOKEN)
-                ? new Date(expiration.getTime() + jwtProperties.getJWT_ACCESS_EXPIRE())
-                : new Date(expiration.getTime() + jwtProperties.getJWT_REFRESH_EXPIRE());
+                ? new Date(expiration.getTime() + jwtProperties.getAccessExpire())
+                : new Date(expiration.getTime() + jwtProperties.getRefreshExpire());
         String secretKey = (jwtType == JwtType.ACCESS_TOKEN)
                 ? appProperties.getSecret()
                 : appProperties.getRefreshSecret();
