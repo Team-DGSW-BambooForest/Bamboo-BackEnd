@@ -37,7 +37,7 @@ public class TokenProvider {
 
         Claims claims = Jwts.claims();
         claims.put("userId", userId);
-
+        log.info("[{}]", expiration);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(jwtType.toString())
