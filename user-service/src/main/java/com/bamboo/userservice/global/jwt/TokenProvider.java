@@ -62,9 +62,9 @@ public class TokenProvider {
     }
 
     public UserEntity validateToken(String token) {
-        return userRepository.findById(
-                        Integer.valueOf(parseToken(token, JwtType.ACCESS_TOKEN)
-                                .get("userId")
+        return userRepository.findByName(
+                        (parseToken(token, JwtType.ACCESS_TOKEN)
+                                .get("name")
                                 .toString())
                 )
                 .orElseThrow(UserEntity.NotFoundException::new);
