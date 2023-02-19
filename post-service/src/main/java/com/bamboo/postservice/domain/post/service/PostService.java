@@ -12,7 +12,6 @@ import com.bamboo.postservice.domain.post.presentation.dto.request.PostRequest;
 import com.bamboo.postservice.global.exception.PostNotAllowedException;
 import com.bamboo.postservice.global.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -44,21 +44,17 @@ public class PostService {
                 .hashTagList(new ArrayList<>())
                 .build();
 
-        postRepository.save(post);
-
         List<HashTag> hashTagList = Arrays.stream(request.getHashtags())
                 .map(it -> HashTag.builder()
                         .hashTag(it)
                         .build())
                 .collect(toList());
 
-        hashTagRepository.saveAll(hashTagList);
-
-        int bound = request.getHashtags().length;
-        for (int i = 0; i < bound; i++) {
-            HashTag hashTag = hashTagList.get(i);
+        for (HashTag hashTag : hashTagList) {
             post.addHashTag(hashTag);
         }
+
+        postRepository.save(post);
 
         return ResponseEntity.status(201).body("게시글이 성공적으로 게시되엇습니다");
     }
@@ -73,7 +69,7 @@ public class PostService {
             throw PostNotAllowedException.EXPECTION;
         }
 
-        List<TagRo> hashTagList = hashTagRepository.findAllByPost_PostId(id)
+        List<TagRo> hashTagList = hashTagRepository.findHashTagByPost_PostId(id)
                 .stream().map(it -> new TagRo(it.getTagId(), it.getHashTag()))
                 .collect(toList());
 
@@ -83,7 +79,7 @@ public class PostService {
     public PostListRo getAllPost(int page) {
         Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.ASC, "postId");
 
-        Page<Post> posts = postRepository.findAll(pageable);
+        Page<Post> posts = postRepository.findAllByStatus(PostStatus.ALLOWED,pageable);
 
         List<PostRo> postList = posts.stream().map(it ->
                     new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
@@ -96,25 +92,21 @@ public class PostService {
     public PostListRo getPostByTitle(int page, String title) {
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "postId");
 
-        List<Post> posts = postRepository.findAllByTitleContaining(title, pageable)
-                .stream().filter(it -> it.getStatus().equals(PostStatus.ALLOWED))
-                .collect(toList());
+        Page<Post> postPage = postRepository.findAllByTitleContainingAndStatus(title, PostStatus.ALLOWED, pageable);
 
-        List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
-                ).collect(toList());
+        List<PostRo> postList = postPage.getContent().stream().map(it ->
+                        new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId())))
+                .collect(Collectors.toList());
 
-        return PostListRo.builder()
-                .list(postList)
-                .build();
+        return postListRobulider(postList);
     }
     @Transactional(readOnly = true)
     public PostListRo getPostByHashTag(int page, String tag) {
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "post_id");
 
-        List<Long> hashTagContaining = hashTagRepository.findDistinctByHashTagContaining(tag, pageable);
+        List<Long> postIds = hashTagRepository.findDistinctByHashTagContaining(tag, pageable);
 
-        List<Post> posts = hashTagContaining.stream().map(postRepository::findByPostId)
+        List<Post> posts = postIds.stream().map(postRepository::findByPostId)
                 .filter(i -> i.getStatus().equals(PostStatus.ALLOWED))
                 .collect(toList());
 
