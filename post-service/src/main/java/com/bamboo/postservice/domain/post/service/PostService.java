@@ -72,7 +72,7 @@ public class PostService {
                 .stream().map(it -> new TagRo(it.getTagId(), it.getHashTag()))
                 .collect(toList());
 
-        return new PostRo(post.getPostId(),post.getProfileImage(), post.getContent(),post.getCreatedAt(), hashTagList);
+        return new PostRo(post.getPostId(), post.getAuthor(), post.getProfileImage(), post.getContent(), post.getCreatedAt(), hashTagList);
     }
     @Transactional(readOnly = true)
     public PostListRo getAllPost(int page) {
@@ -81,7 +81,7 @@ public class PostService {
         Page<Post> posts = postRepository.findAllByStatus(PostStatus.ALLOWED,pageable);
 
         List<PostRo> postList = posts.stream().map(it ->
-                    new PostRo(it.getPostId(), it.getProfileImage(), it.getContent(), it.getCreatedAt(),hashTagRepository.findAllByPost_PostId(it.getPostId()))
+                    new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(),hashTagRepository.findAllByPost_PostId(it.getPostId()))
                 ).collect(toList());
 
         return postListRobulider(postList);
@@ -98,7 +98,7 @@ public class PostService {
                 .collect(toList());
 
         List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getProfileImage(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+                new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
         ).collect(toList());
 
         return postListRobulider(postList);
@@ -111,7 +111,7 @@ public class PostService {
         Page<Post> posts = postRepository.findAllByStatus(PostStatus.HOLD, pageable);
 
         List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getProfileImage(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+                new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
         ).collect(toList());
 
         return postListRobulider(postList);
