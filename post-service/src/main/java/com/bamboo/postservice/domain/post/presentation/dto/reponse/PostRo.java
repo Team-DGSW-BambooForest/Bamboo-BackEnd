@@ -13,6 +13,8 @@ import java.util.List;
 public class PostRo {
     private Long postId;
 
+    private String author;
+
     private String profileImage;
 
     private String content;

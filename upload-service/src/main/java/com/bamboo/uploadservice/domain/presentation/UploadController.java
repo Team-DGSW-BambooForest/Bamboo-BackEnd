@@ -17,7 +17,7 @@ public class UploadController {
     @ResponseStatus(HttpStatus.CREATED)
     public void uploadImage(
             @PathVariable("postId") Long postId,
-            MultipartFile multipartFile
+            @RequestParam("image") MultipartFile multipartFile
     ) {
         uploadService.uploadImage(postId, multipartFile);
     }

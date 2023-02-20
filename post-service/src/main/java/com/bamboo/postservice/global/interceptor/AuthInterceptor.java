@@ -36,15 +36,16 @@ public class AuthInterceptor implements HandlerInterceptor {
         String token = jwtUtil.extract(request, "Bearer");
         if(token.equals("")) {
             request.setAttribute("author", "익명의 대소고인");
+            request.setAttribute("profileImage", "익명 유저");
             return true;
         }
 
         jwtUtil.validateToken(token);
 
         String userName = jwtUtil.getUsername(token);
-        String proFileImage = jwtUtil.getProfileImage(token);
+        String profileImage = jwtUtil.getProfileImage(token);
         request.setAttribute("author", userName);
-        request.setAttribute("proFileImage", proFileImage);
+        request.setAttribute("profileImage", profileImage);
         return true;
     }
 

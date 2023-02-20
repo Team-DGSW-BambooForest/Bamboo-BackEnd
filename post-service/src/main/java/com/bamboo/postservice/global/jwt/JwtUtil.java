@@ -24,7 +24,7 @@ public class JwtUtil {
     }
 
     public String getProfileImage(String token) {
-        return Jwts.parser().setSigningKey(configProperties.getAccessKey()).parseClaimsJws(token).getBody().get("profileimage", String.class);
+        return Jwts.parser().setSigningKey(configProperties.getAccessKey()).parseClaimsJws(token).getBody().get("profileImage", String.class);
     }
 
 
