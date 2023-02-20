@@ -42,9 +42,9 @@ public class AuthInterceptor implements HandlerInterceptor {
         jwtUtil.validateToken(token);
 
         String userName = jwtUtil.getUsername(token);
-        String proFileImage = jwtUtil.getProfileImage(token);
+        String profileImage = jwtUtil.getProfileImage(token);
         request.setAttribute("author", userName);
-        request.setAttribute("proFileImage", proFileImage);
+        request.setAttribute("profileImage", profileImage);
         return true;
     }
 

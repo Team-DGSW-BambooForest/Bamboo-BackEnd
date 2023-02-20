@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    Page<Post> findAllByTitleContainingAndStatus(String title, PostStatus status,Pageable pageable);
-
     Post findByPostId(long id);
 
     Page<Post> findAllByStatus(PostStatus status, Pageable pageable);
