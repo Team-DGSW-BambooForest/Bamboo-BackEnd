@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 @AllArgsConstructor
 @Getter
@@ -11,9 +13,11 @@ import java.util.List;
 public class PostRo {
     private Long postId;
 
-    private String title;
+    private String profileImage;
 
     private String content;
+
+    private LocalDateTime ceeateAt;
 
     private List<TagRo> hashTags;
 

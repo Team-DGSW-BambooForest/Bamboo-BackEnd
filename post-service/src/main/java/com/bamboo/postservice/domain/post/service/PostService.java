@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -34,11 +33,11 @@ public class PostService {
     private final HashTagRepository hashTagRepository;
 
     @Transactional
-    public ResponseEntity<?> creatPost(PostRequest request, String author) {
+    public ResponseEntity<?> creatPost(PostRequest request, String author, String profileImage) {
 
         Post post = Post.builder()
-                .title(request.getTitle())
                 .content(request.getContent())
+                .profileImage(profileImage)
                 .author(author)
                 .status(PostStatus.HOLD)
                 .hashTagList(new ArrayList<>())
@@ -73,7 +72,7 @@ public class PostService {
                 .stream().map(it -> new TagRo(it.getTagId(), it.getHashTag()))
                 .collect(toList());
 
-        return new PostRo(post.getPostId(), post.getTitle(), post.getContent(), hashTagList);
+        return new PostRo(post.getPostId(),post.getProfileImage(), post.getContent(),post.getCreatedAt(), hashTagList);
     }
     @Transactional(readOnly = true)
     public PostListRo getAllPost(int page) {
@@ -82,24 +81,12 @@ public class PostService {
         Page<Post> posts = postRepository.findAllByStatus(PostStatus.ALLOWED,pageable);
 
         List<PostRo> postList = posts.stream().map(it ->
-                    new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+                    new PostRo(it.getPostId(), it.getProfileImage(), it.getContent(), it.getCreatedAt(),hashTagRepository.findAllByPost_PostId(it.getPostId()))
                 ).collect(toList());
 
         return postListRobulider(postList);
     }
 
-    @Transactional(readOnly = true)
-    public PostListRo getPostByTitle(int page, String title) {
-        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "postId");
-
-        Page<Post> postPage = postRepository.findAllByTitleContainingAndStatus(title, PostStatus.ALLOWED, pageable);
-
-        List<PostRo> postList = postPage.getContent().stream().map(it ->
-                        new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId())))
-                .collect(Collectors.toList());
-
-        return postListRobulider(postList);
-    }
     @Transactional(readOnly = true)
     public PostListRo getPostByHashTag(int page, String tag) {
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "post_id");
@@ -111,7 +98,7 @@ public class PostService {
                 .collect(toList());
 
         List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+                new PostRo(it.getPostId(), it.getProfileImage(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
         ).collect(toList());
 
         return postListRobulider(postList);
@@ -124,7 +111,7 @@ public class PostService {
         Page<Post> posts = postRepository.findAllByStatus(PostStatus.HOLD, pageable);
 
         List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+                new PostRo(it.getPostId(), it.getProfileImage(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
         ).collect(toList());
 
         return postListRobulider(postList);
