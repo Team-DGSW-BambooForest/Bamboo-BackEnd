@@ -37,13 +37,6 @@ public class PostController {
         return postService.getAllPost(page);
     }
 
-    @GetMapping("/title/{title}")
-    @ApiOperation(value = "제목으로 게시글 조회")
-    public PostListRo getPostByTitle(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                     @PathVariable("title") String title) {
-        return postService.getPostByTitle(page, title);
-    }
-
     @GetMapping("/tag/{tag}")
     @ApiOperation(value = "테그로 게시글 조회")
     public PostListRo getPostByHashtag(@RequestParam(value = "page", defaultValue = "1") Integer page,

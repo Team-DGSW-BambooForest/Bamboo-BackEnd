@@ -19,11 +19,10 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
-    private String author;
-
-    private String title;
     @Lob
     private String content;
+
+    private String author;
 
     @Enumerated(EnumType.STRING)
     private PostStatus status;
@@ -39,10 +38,9 @@ public class Post {
     }
 
     @Builder
-    public Post(Long postId, String author, String title, String content, PostStatus status, LocalDateTime createdAt, List<HashTag> hashTagList) {
+    public Post(Long postId, String author, String content, PostStatus status, LocalDateTime createdAt, List<HashTag> hashTagList) {
         this.postId = postId;
         this.author = author;
-        this.title = title;
         this.content = content;
         this.status = status;
         this.createdAt = createdAt;

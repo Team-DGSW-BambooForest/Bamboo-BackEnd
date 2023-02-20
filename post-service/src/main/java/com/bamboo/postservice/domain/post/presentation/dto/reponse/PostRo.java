@@ -11,8 +11,6 @@ import java.util.List;
 public class PostRo {
     private Long postId;
 
-    private String title;
-
     private String content;
 
     private List<TagRo> hashTags;
