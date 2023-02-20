@@ -74,10 +74,11 @@ public class AuthService {
         DOpenApiDto data = getCodeToDodamInfo(loginRequestDto.getCode()).block();
         UserEntity userEntity = userService.save(Objects.requireNonNull(data));
         String name = userEntity.getName();
+        String profileImage = userEntity.getProfileImage();
         return LoginResponseDto.builder()
                 .userEntity(userEntity)
-                .token(tokenProvider.generateToken(name, JwtType.ACCESS_TOKEN))
-                .refreshToken(tokenProvider.generateToken(name, JwtType.REFRESH_TOKEN))
+                .token(tokenProvider.generateToken(name, profileImage, JwtType.ACCESS_TOKEN))
+                .refreshToken(tokenProvider.generateToken(name, profileImage, JwtType.REFRESH_TOKEN))
                 .build();
     }
 }
