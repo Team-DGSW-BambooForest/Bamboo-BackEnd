@@ -22,4 +22,11 @@ public class UploadController {
         uploadService.uploadImage(postId, multipartFile);
     }
 
+    @GetMapping("/{postId}")
+    public String getImage(
+            @PathVariable("postId") Long postId
+    ) {
+        return "https://bamboodgsw.s3.ap-northeast-2.amazonaws.com/image/image_" + postId;
+    }
+
 }
