@@ -18,9 +18,10 @@ public class PostController {
     @AuthToken
     @PostMapping("/create")
     public ResponseEntity<?> creatPost(@RequestBody @Validated PostRequest request,
-                                       @RequestAttribute String author)
+                                       @RequestAttribute String author,
+                                       @RequestAttribute String profileImage)
     {
-        return postService.creatPost(request, author);
+        return postService.creatPost(request, author, profileImage);
     }
 
     @GetMapping("/{id}")

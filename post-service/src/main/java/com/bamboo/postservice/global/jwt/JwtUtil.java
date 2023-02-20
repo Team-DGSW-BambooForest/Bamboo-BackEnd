@@ -19,9 +19,14 @@ public class JwtUtil {
 
     private final ConfigProperties configProperties;
 
-    public String getSubject(String token) {
-        return Jwts.parser().setSigningKey(configProperties.getAccessKey()).parseClaimsJws(token).getBody().getSubject();
+    public String getUsername(String token) {
+        return Jwts.parser().setSigningKey(configProperties.getAccessKey()).parseClaimsJws(token).getBody().get("name", String.class);
     }
+
+    public String getProfileImage(String token) {
+        return Jwts.parser().setSigningKey(configProperties.getAccessKey()).parseClaimsJws(token).getBody().get("profileimage", String.class);
+    }
+
 
     public String extract(HttpServletRequest request, String type) {
         Enumeration<String> headers = request.getHeaders("Authorization");
