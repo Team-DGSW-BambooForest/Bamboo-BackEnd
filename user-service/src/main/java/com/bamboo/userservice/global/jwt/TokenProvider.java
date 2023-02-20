@@ -22,7 +22,7 @@ public class TokenProvider {
     private final AppProperties appProperties;
     private final UserRepository userRepository;
 
-    public String generateToken(String name, JwtType jwtType) {
+    public String generateToken(String name, String profileImage, JwtType jwtType) {
         Date expiration = new Date();
         expiration = (jwtType == JwtType.ACCESS_TOKEN)
                 ? new Date(expiration.getTime() + jwtProperties.getAccessExpire())
@@ -31,10 +31,9 @@ public class TokenProvider {
                 ? appProperties.getSecret()
                 : appProperties.getRefreshSecret();
 
-        Claims claims = Jwts.claims();
-        claims.put("name", name);
         return Jwts.builder()
-                .setClaims(claims)
+                .claim("name", name)
+                .claim("profileImage", profileImage)
                 .setSubject(jwtType.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(expiration)
@@ -79,6 +78,6 @@ public class TokenProvider {
         UserEntity member = userRepository
                 .findByName(claims.get("name").toString())
                 .orElseThrow(UserEntity.NotFoundException::new);
-        return generateToken(member.getName(), JwtType.ACCESS_TOKEN);
+        return generateToken(member.getName(), member.getProfileImage(), JwtType.ACCESS_TOKEN);
     }
 }
