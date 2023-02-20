@@ -72,7 +72,7 @@ public class PostService {
                 .stream().map(it -> new TagRo(it.getTagId(), it.getHashTag()))
                 .collect(toList());
 
-        return new PostRo(post.getPostId(), post.getContent(), hashTagList);
+        return new PostRo(post.getPostId(), post.getContent(),post.getCreatedAt(), hashTagList);
     }
     @Transactional(readOnly = true)
     public PostListRo getAllPost(int page) {
@@ -81,7 +81,7 @@ public class PostService {
         Page<Post> posts = postRepository.findAllByStatus(PostStatus.ALLOWED,pageable);
 
         List<PostRo> postList = posts.stream().map(it ->
-                    new PostRo(it.getPostId(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+                    new PostRo(it.getPostId(), it.getContent(), it.getCreatedAt(),hashTagRepository.findAllByPost_PostId(it.getPostId()))
                 ).collect(toList());
 
         return postListRobulider(postList);
@@ -94,7 +94,7 @@ public class PostService {
         Page<Post> postPage = postRepository.findAllByTitleContainingAndStatus(title, PostStatus.ALLOWED, pageable);
 
         List<PostRo> postList = postPage.getContent().stream().map(it ->
-                        new PostRo(it.getPostId(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId())))
+                        new PostRo(it.getPostId(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId())))
                 .collect(Collectors.toList());
 
         return postListRobulider(postList);
@@ -110,7 +110,7 @@ public class PostService {
                 .collect(toList());
 
         List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+                new PostRo(it.getPostId(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
         ).collect(toList());
 
         return postListRobulider(postList);
@@ -123,7 +123,7 @@ public class PostService {
         Page<Post> posts = postRepository.findAllByStatus(PostStatus.HOLD, pageable);
 
         List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+                new PostRo(it.getPostId(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
         ).collect(toList());
 
         return postListRobulider(postList);
