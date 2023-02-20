@@ -1,4 +1,4 @@
-package com.bamboo.postservice.global.config;
+package com.bamboo.userservice.global.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -12,13 +12,12 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         Info info = new Info()
-                .title("대대숲 post-service api")
+                .title("대대숲 user-service api")
                 .version("version 1.0")
-                .description("대대숲 post-service api 문서, ip : 3.36.150.248");
+                .description("대대숲 user-service api 문서, ip : 3.36.150.248");
 
         return new OpenAPI()
                 .components(new Components())
                 .info(info);
     }
-
 }
