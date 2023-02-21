@@ -6,12 +6,15 @@ spring:
     name: apigateway-service
   cloud:
     gateway:
-#      default-filters:
-#        - name: GlobalFilter
-#        args:
-#          baseMessage: Hello Spring Cloud Gateway Global Filter
-#          preLogger: true
-#          postLogger: true
+      default-filters:
+        - DedupeResponseHeader=Acess-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allow-credentials: false
+            allowedHeaders: "*"
+            allowedMethods: "*"
       routes:
         - id: user-service
           uri: http://3.36.150.248:7000
