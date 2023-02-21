@@ -4,6 +4,7 @@ import com.bamboo.userservice.domain.auth.presentation.dto.api.DOpenApiDto;
 import com.bamboo.userservice.domain.auth.presentation.dto.api.DodamInfoDto;
 import com.bamboo.userservice.domain.user.UserEntity;
 import com.bamboo.userservice.domain.user.domain.repository.UserRepository;
+import com.bamboo.userservice.global.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +14,13 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final TokenProvider tokenProvider;
     @Transactional
     public UserEntity save(DOpenApiDto dOpenApiDto) {
         DodamInfoDto data = dOpenApiDto.getDodamInfoData();
         UserEntity user = DodamInfoDto.toEntity(data);
         if(isExisted(user)){
-            throw new UserEntity.AlreadyExistedException();
+            return user;
         }
         return userRepository.save(user);
     }
