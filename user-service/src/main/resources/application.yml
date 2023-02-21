@@ -1,38 +1,7 @@
-server:
-  port: ${PORT}
 spring:
   application:
-    name: user-service
-  datasource:
-    url: jdbc:mysql://localhost:3306/bamboo
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-
-  jpa:
-    show-sql: false
-    generate-ddl: true
-    hibernate:
-      ddl-auto: update
-
-eureka:
-  instance:
-    instance-id: user-service
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-    fetch-registry: true
-    register-with-eureka: true
-
-app:
-  secret: ${SECRET}  #accessToken 암호화
-  refresh-secret: ${REFRESH_SECRET}  #refreshToken 암호화
-  client-id: ${CLIENT_ID}
-  client-secret: ${CLIENT_SECRET}
-  auth-url: ${AUTH}
-  open-api-url: ${OPEN_API}
-jwt:
-  access:
-    expire: ${ACCESS_EXPIRE}
-  refresh:
-    expire: ${REFRESH_EXPIRE}
+    name: user
+  profiles:
+    active: config
+  config:
+    import: optional:configserver:http://13.209.33.18:8888

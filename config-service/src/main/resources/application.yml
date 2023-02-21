@@ -8,9 +8,60 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/MangKyu/spring-cloud-config-sample
-          search-paths: test-cloud-config-file/**
-          default-label: master
+          uri: git@github.com:Team-DGSW-BambooForest/Bamboo-BackEnd-Config.git
+          ignoreLocalSshSettings: true
+          privateKey: |
+            -----BEGIN RSA PRIVATE KEY-----
+            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
+            -----END RSA PRIVATE KEY-----
 
 management:
   endpoints:

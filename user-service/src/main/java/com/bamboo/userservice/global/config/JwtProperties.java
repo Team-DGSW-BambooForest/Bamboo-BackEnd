@@ -9,14 +9,11 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 @Getter
 @ConstructorBinding
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "app")
+@ConfigurationProperties(prefix = "jwt")
 @RefreshScope
-public class AppProperties {
-    private String secret;
-    private String refreshSecret;
-    private String clientId;
-    private String clientSecret;
-    private String authUrl;
-    private String openApiUrl;
+public class JwtProperties {
+
+    private long accessExpire;
+    private long refreshExpire;
 
 }

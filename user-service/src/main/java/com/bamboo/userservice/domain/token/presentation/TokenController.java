@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/token")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class TokenController {
 
     private final TokenProvider tokenProvider;
 
-    @PostMapping("/refresh")
+    @PostMapping("/token/refresh")
     public AccessTokenResponseDto refresh(@RequestBody RefreshTokenRequestDto requestDto){
         return new AccessTokenResponseDto(tokenProvider.refreshToken(requestDto.getRefreshToken()));
     }

@@ -4,42 +4,36 @@ package com.bamboo.userservice.global.jwt;
 import com.bamboo.userservice.domain.user.UserEntity;
 import com.bamboo.userservice.domain.user.domain.repository.UserRepository;
 import com.bamboo.userservice.global.config.AppProperties;
+import com.bamboo.userservice.global.config.JwtProperties;
 import com.bamboo.userservice.global.enums.JwtType;
 import com.bamboo.userservice.global.exception.GlobalException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenProvider {
-    @Value("${jwt.access.expire}")
-    private static long JWT_ACCESS_EXPIRE;  //1일
-    @Value("${jwt.refresh.expire}")
-    private static long JWT_REFRESH_EXPIRE;  //7일
+
+    private final JwtProperties jwtProperties;
     private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256; //해쉬암호 HS256
     private final AppProperties appProperties;
     private final UserRepository userRepository;
 
-    public String generateToken(Integer userId, JwtType jwtType) {
+    public String generateToken(String name, String profileImage, JwtType jwtType) {
         Date expiration = new Date();
         expiration = (jwtType == JwtType.ACCESS_TOKEN)
-                ? new Date(expiration.getTime() + JWT_ACCESS_EXPIRE)
-                : new Date(expiration.getTime() + JWT_REFRESH_EXPIRE);
+                ? new Date(expiration.getTime() + jwtProperties.getAccessExpire())
+                : new Date(expiration.getTime() + jwtProperties.getRefreshExpire());
         String secretKey = (jwtType == JwtType.ACCESS_TOKEN)
                 ? appProperties.getSecret()
                 : appProperties.getRefreshSecret();
 
-        Claims claims = Jwts.claims();
-        claims.put("userId", userId);
-
         return Jwts.builder()
-                .setClaims(claims)
+                .claim("name", name)
+                .claim("profileImage", profileImage)
                 .setSubject(jwtType.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(expiration)
@@ -67,9 +61,9 @@ public class TokenProvider {
     }
 
     public UserEntity validateToken(String token) {
-        return userRepository.findById(
-                        Integer.valueOf(parseToken(token, JwtType.ACCESS_TOKEN)
-                                .get("userId")
+        return userRepository.findByName(
+                        (parseToken(token, JwtType.ACCESS_TOKEN)
+                                .get("name")
                                 .toString())
                 )
                 .orElseThrow(UserEntity.NotFoundException::new);
@@ -82,8 +76,8 @@ public class TokenProvider {
 
         Claims claims = parseToken(refreshToken, JwtType.REFRESH_TOKEN);
         UserEntity member = userRepository
-                .findById(Integer.parseInt(claims.get("userId").toString()))
+                .findByName(claims.get("name").toString())
                 .orElseThrow(UserEntity.NotFoundException::new);
-        return generateToken(member.getUserId(), JwtType.ACCESS_TOKEN);
+        return generateToken(member.getName(), member.getProfileImage(), JwtType.ACCESS_TOKEN);
     }
 }
