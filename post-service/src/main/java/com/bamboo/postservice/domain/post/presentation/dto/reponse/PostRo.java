@@ -19,7 +19,7 @@ public class PostRo {
 
     private String content;
 
-    private LocalDateTime ceeateAt;
+    private LocalDateTime createdAt;
 
     private List<TagRo> hashTags;
 
