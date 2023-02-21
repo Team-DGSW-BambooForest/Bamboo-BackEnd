@@ -1,6 +1,7 @@
 package com.bamboo.adminservice.global.util;
 
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -8,19 +9,23 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
+@Slf4j
 @Component
 public class AuthorizationUtil {
 
     @Value("${jwt.secret-key}")
-    private static String secretKey;
+    private String secretKey;
 
-    public static String getSubject(String token) {
+    public String getSubject(String token) {
+        log.info(secretKey);
         return Jwts.parser()
                 .setSigningKey(secretKey)
-                .parseClaimsJws(token).getBody().getSubject();
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role", String.class);
     }
 
-    public static String extract(HttpServletRequest request, String type) {
+    public String extract(HttpServletRequest request, String type) {
         Enumeration<String> headers = request.getHeaders("Authorization");
 
         while (headers.hasMoreElements()) {

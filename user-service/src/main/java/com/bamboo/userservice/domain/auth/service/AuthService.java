@@ -6,6 +6,7 @@ import com.bamboo.userservice.domain.auth.presentation.dto.request.LoginRequestD
 import com.bamboo.userservice.domain.auth.presentation.dto.response.DAuthResponseDto;
 import com.bamboo.userservice.domain.auth.presentation.dto.response.LoginResponseDto;
 import com.bamboo.userservice.domain.user.UserEntity;
+import com.bamboo.userservice.domain.user.domain.type.Role;
 import com.bamboo.userservice.domain.user.service.UserService;
 import com.bamboo.userservice.global.config.AppProperties;
 import com.bamboo.userservice.global.enums.JwtType;
@@ -75,10 +76,11 @@ public class AuthService {
         UserEntity userEntity = userService.save(Objects.requireNonNull(data));
         String name = userEntity.getName();
         String profileImage = userEntity.getProfileImage();
+        Role role = userEntity.getRole();
         return LoginResponseDto.builder()
                 .userEntity(userEntity)
-                .token(tokenProvider.generateToken(name, profileImage, JwtType.ACCESS_TOKEN))
-                .refreshToken(tokenProvider.generateToken(name, profileImage, JwtType.REFRESH_TOKEN))
+                .token(tokenProvider.generateToken(name, profileImage, role, JwtType.ACCESS_TOKEN))
+                .refreshToken(tokenProvider.generateToken(name, profileImage, role, JwtType.REFRESH_TOKEN))
                 .build();
     }
 }

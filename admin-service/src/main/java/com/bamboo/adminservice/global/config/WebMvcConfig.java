@@ -7,17 +7,18 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@RequiredArgsConstructor
 @Configuration
+@RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
     private final HttpIntercetor httpIntercetor;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*");
+                .allowedOrigins("*")
+                .allowedMethods("*")
+                .allowCredentials(false);
     }
-
     @Override
     public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(httpIntercetor);
