@@ -6,8 +6,6 @@ spring:
     name: apigateway-service
   cloud:
     gateway:
-      default-filters:
-        - DedupeResponseHeader=Acess-Control-Allow-Origin Access-Control-Allow-Credentials
       globalcors:
         cors-configurations:
           '[/**]':
