@@ -55,7 +55,7 @@ public class PostService {
 
         postRepository.save(post);
 
-        return ResponseEntity.status(201).body("게시글이 성공적으로 게시되엇습니다");
+        return ResponseEntity.status(201).body(post.getPostId());
     }
     @Transactional(readOnly = true)
     public PostRo getPostById(Long id){
