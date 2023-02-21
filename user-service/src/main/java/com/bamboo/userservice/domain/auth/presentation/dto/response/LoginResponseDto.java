@@ -12,7 +12,5 @@ import lombok.Getter;
 public class LoginResponseDto {
     private UserEntity userEntity;
     private String token;
-
-    @JsonProperty("refresh-token")
     private String refreshToken;
 }
