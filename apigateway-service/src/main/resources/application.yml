@@ -44,7 +44,20 @@ spring:
               - POST
             allowedHeaders: '*'
             maxAge: 30
-#            maxAge: 30
+        - id: upload-service
+          uri: http://43.200.19.203:7005
+          predicates:
+            - name: Path
+              args:
+                patterns: /upload/**
+          metadata:
+            cors
+            allowedOrigins: '*'
+            allowedMethods:
+              - GET
+              - POST
+            allowedHeaders: '*'
+            maxAge: 30
 #            - name: Method
 #              args:
 #                methods:

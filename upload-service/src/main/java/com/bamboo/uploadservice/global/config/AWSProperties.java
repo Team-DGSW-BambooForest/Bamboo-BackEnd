@@ -1,4 +1,4 @@
-package com.bamboo.userservice.global.config;
+package com.bamboo.uploadservice.global.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,14 +9,12 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 @Getter
 @ConstructorBinding
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "app")
+@ConfigurationProperties(prefix = "aws")
 @RefreshScope
-public class AppProperties {
-    private String secret;
-    private String refreshSecret;
-    private String clientId;
-    private String clientSecret;
-    private String authUrl;
-    private String openApiUrl;
+public class AWSProperties {
+
+    private String accessKey;
+    private String secretKey;
+    private String region;
 
 }

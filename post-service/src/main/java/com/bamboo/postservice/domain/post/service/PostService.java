@@ -33,17 +33,15 @@ public class PostService {
     private final HashTagRepository hashTagRepository;
 
     @Transactional
-    public ResponseEntity<?> creatPost(PostRequest request, String author) {
+    public ResponseEntity<?> creatPost(PostRequest request, String author, String profileImage) {
 
         Post post = Post.builder()
-                .title(request.getTitle())
                 .content(request.getContent())
+                .profileImage(profileImage)
                 .author(author)
                 .status(PostStatus.HOLD)
                 .hashTagList(new ArrayList<>())
                 .build();
-
-        postRepository.save(post);
 
         List<HashTag> hashTagList = Arrays.stream(request.getHashtags())
                 .map(it -> HashTag.builder()
@@ -51,15 +49,13 @@ public class PostService {
                         .build())
                 .collect(toList());
 
-        hashTagRepository.saveAll(hashTagList);
-
-        int bound = request.getHashtags().length;
-        for (int i = 0; i < bound; i++) {
-            HashTag hashTag = hashTagList.get(i);
+        for (HashTag hashTag : hashTagList) {
             post.addHashTag(hashTag);
         }
 
-        return ResponseEntity.status(201).body("게시글이 성공적으로 게시되엇습니다");
+        postRepository.save(post);
+
+        return ResponseEntity.status(201).body(post.getPostId());
     }
     @Transactional(readOnly = true)
     public PostRo getPostById(Long id){
@@ -72,53 +68,50 @@ public class PostService {
             throw PostNotAllowedException.EXPECTION;
         }
 
-        List<TagRo> hashTagList = hashTagRepository.findAllByPost_PostId(id)
+        List<TagRo> hashTagList = hashTagRepository.findHashTagByPost_PostId(id)
                 .stream().map(it -> new TagRo(it.getTagId(), it.getHashTag()))
                 .collect(toList());
 
-        return new PostRo(post.getPostId(), post.getTitle(), post.getContent(), hashTagList);
+        return new PostRo(post.getPostId(), post.getAuthor(), post.getProfileImage(), post.getContent(), post.getCreatedAt(), hashTagList);
     }
     @Transactional(readOnly = true)
     public PostListRo getAllPost(int page) {
         Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.ASC, "postId");
 
-        Page<Post> posts = postRepository.findAll(pageable);
+        Page<Post> posts = postRepository.findAllByStatus(PostStatus.ALLOWED,pageable);
 
         List<PostRo> postList = posts.stream().map(it ->
-                    new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+                    new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(),hashTagRepository.findAllByPost_PostId(it.getPostId()))
                 ).collect(toList());
 
         return postListRobulider(postList);
     }
 
     @Transactional(readOnly = true)
-    public PostListRo getPostByTitle(int page, String title) {
-        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "postId");
-
-        List<Post> posts = postRepository.findAllByTitleContaining(title, pageable)
-                .stream().filter(it -> it.getStatus().equals(PostStatus.ALLOWED))
-                .collect(toList());
-
-        List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
-                ).collect(toList());
-
-        return PostListRo.builder()
-                .list(postList)
-                .build();
-    }
-    @Transactional(readOnly = true)
     public PostListRo getPostByHashTag(int page, String tag) {
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "post_id");
 
-        List<Long> hashTagContaining = hashTagRepository.findDistinctByHashTagContaining(tag, pageable);
+        List<Long> postIds = hashTagRepository.findDistinctByHashTagContaining(tag, pageable);
 
-        List<Post> posts = hashTagContaining.stream().map(postRepository::findByPostId)
+        List<Post> posts = postIds.stream().map(postRepository::findByPostId)
                 .filter(i -> i.getStatus().equals(PostStatus.ALLOWED))
                 .collect(toList());
 
         List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getTitle(), it.getContent(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+                new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
+        ).collect(toList());
+
+        return postListRobulider(postList);
+    }
+
+    @Transactional(readOnly = true)
+    public PostListRo getUnauthorizedPost(int page) {
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "postId");
+
+        Page<Post> posts = postRepository.findAllByStatus(PostStatus.HOLD, pageable);
+
+        List<PostRo> postList = posts.stream().map(it ->
+                new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
         ).collect(toList());
 
         return postListRobulider(postList);

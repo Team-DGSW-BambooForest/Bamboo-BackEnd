@@ -1,14 +1,18 @@
 package com.bamboo.postservice.global.interceptor;
 
+import com.bamboo.postservice.global.jwt.JwtType;
 import com.bamboo.postservice.global.jwt.JwtUtil;
 import com.bamboo.postservice.global.annotation.AuthToken;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Component
 @RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
 
@@ -31,13 +35,17 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         String token = jwtUtil.extract(request, "Bearer");
         if(token.equals("")) {
-            request.setAttribute("user", "익명의 대소고인");
-            throw new IllegalArgumentException("anonymous");
+            request.setAttribute("author", "익명의 대소고인");
+            request.setAttribute("profileImage", "익명 유저");
+            return true;
         }
 
-        String userName = jwtUtil.getSubject(token);
-        request.setAttribute("user", userName);
+        jwtUtil.validateToken(token);
 
+        String userName = jwtUtil.getUsername(token);
+        String profileImage = jwtUtil.getProfileImage(token);
+        request.setAttribute("author", userName);
+        request.setAttribute("profileImage", profileImage);
         return true;
     }
 

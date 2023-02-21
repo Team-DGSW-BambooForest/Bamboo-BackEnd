@@ -18,9 +18,10 @@ public class PostController {
     @AuthToken
     @PostMapping("/create")
     public ResponseEntity<?> creatPost(@RequestBody @Validated PostRequest request,
-                                       @RequestAttribute String author)
+                                       @RequestAttribute String author,
+                                       @RequestAttribute String profileImage)
     {
-        return postService.creatPost(request, author);
+        return postService.creatPost(request, author, profileImage);
     }
 
     @GetMapping("/{id}")
@@ -33,16 +34,15 @@ public class PostController {
         return postService.getAllPost(page);
     }
 
-    @GetMapping("/title/{title}")
-    public PostListRo getPostByTitle(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                     @PathVariable("title") String title) {
-        return postService.getPostByTitle(page, title);
-    }
-
     @GetMapping("/tag/{tag}")
     public PostListRo getPostByHashtag(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                        @PathVariable("tag") String tag) {
          return postService.getPostByHashTag(page, tag);
+    }
+
+    @GetMapping("/list/hold")
+    public PostListRo getUnauthorizedPost(@RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return postService.getUnauthorizedPost(page);
     }
 
 }

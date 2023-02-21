@@ -18,7 +18,7 @@ public class UserService {
         DodamInfoDto data = dOpenApiDto.getDodamInfoData();
         UserEntity user = DodamInfoDto.toEntity(data);
         if(isExisted(user)){
-            throw new UserEntity.AlreadyExistedException();
+            return user;
         }
         return userRepository.save(user);
     }
