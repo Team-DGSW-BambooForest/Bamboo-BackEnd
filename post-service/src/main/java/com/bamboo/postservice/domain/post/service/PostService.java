@@ -9,6 +9,7 @@ import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostListRo;
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostRo;
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.TagRo;
 import com.bamboo.postservice.domain.post.presentation.dto.request.PostRequest;
+import com.bamboo.postservice.global.exception.PostAlreadyAllowedException;
 import com.bamboo.postservice.global.exception.PostNotAllowedException;
 import com.bamboo.postservice.global.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +66,7 @@ public class PostService {
                 );
 
         if (post.getStatus().equals(PostStatus.NOT_ALLOWED) || post.getStatus().equals(PostStatus.HOLD)) {
-            throw PostNotAllowedException.EXPECTION;
+            throw PostNotAllowedException.EXCEPTION;
         }
 
         List<TagRo> hashTagList = hashTagRepository.findHashTagByPost_PostId(id)
@@ -84,7 +85,7 @@ public class PostService {
                     new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(),hashTagRepository.findAllByPost_PostId(it.getPostId()))
                 ).collect(toList());
 
-        return postListRobulider(postList);
+        return postListRoBuilder(postList);
     }
 
     @Transactional(readOnly = true)
@@ -101,7 +102,7 @@ public class PostService {
                 new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
         ).collect(toList());
 
-        return postListRobulider(postList);
+        return postListRoBuilder(postList);
     }
 
     @Transactional(readOnly = true)
@@ -114,10 +115,22 @@ public class PostService {
                 new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
         ).collect(toList());
 
-        return postListRobulider(postList);
+        return postListRoBuilder(postList);
     }
 
-    private PostListRo postListRobulider(List<PostRo> postRoList) {
+    @Transactional
+    public void changeStatus(Long postId, PostStatus status) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> PostNotFoundException.EXPECTION);
+
+        if(post.getStatus().equals(PostStatus.ALLOWED))
+            throw PostAlreadyAllowedException.EXCEPTION;
+
+        post.setStatus(status);
+        postRepository.save(post);
+    }
+
+    private PostListRo postListRoBuilder(List<PostRo> postRoList) {
         return  PostListRo.builder()
                 .list(postRoList)
                 .build();

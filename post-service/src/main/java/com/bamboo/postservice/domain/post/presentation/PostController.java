@@ -1,6 +1,7 @@
 package com.bamboo.postservice.domain.post.presentation;
 
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostListRo;
+import com.bamboo.postservice.domain.post.presentation.dto.request.ChangeStatusRequest;
 import com.bamboo.postservice.global.annotation.AuthToken;
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostRo;
 import com.bamboo.postservice.domain.post.presentation.dto.request.PostRequest;
@@ -43,6 +44,14 @@ public class PostController {
     @GetMapping("/list/hold")
     public PostListRo getUnauthorizedPost(@RequestParam(value = "page", defaultValue = "1") Integer page) {
         return postService.getUnauthorizedPost(page);
+    }
+
+    @PatchMapping("/status/{post-id}")
+    public void changeStatus(
+            @PathVariable("post-id") Long postId,
+            @RequestBody ChangeStatusRequest request
+    ) {
+        postService.changeStatus(postId, request.getStatus());
     }
 
 }
