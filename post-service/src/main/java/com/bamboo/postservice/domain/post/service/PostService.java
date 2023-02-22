@@ -76,7 +76,7 @@ public class PostService {
     }
     @Transactional(readOnly = true)
     public PostListRo getAllPost(int page) {
-        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.ASC, "postId");
+        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "postId");
 
         Page<Post> posts = postRepository.findAllByStatus(PostStatus.ALLOWED,pageable);
 
@@ -89,7 +89,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostListRo getPostByHashTag(int page, String tag) {
-        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "post_id");
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.DESC, "post_id");
 
         List<Long> postIds = hashTagRepository.findDistinctByHashTagContaining(tag, pageable);
 
