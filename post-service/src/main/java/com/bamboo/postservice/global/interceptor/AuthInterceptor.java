@@ -37,6 +37,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         String token = jwtUtil.extract(request, "Bearer");
+
         if(token.equals("")) {
             request.setAttribute("author", "익명의 대소고인");
             request.setAttribute("profileImage", configProperties.getProfileUrl());
