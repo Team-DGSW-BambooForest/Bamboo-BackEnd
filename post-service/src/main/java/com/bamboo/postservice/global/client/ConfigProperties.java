@@ -14,4 +14,7 @@ public class ConfigProperties  {
 
     @Value("${jwt.refresh-secret}")
     private String refreshKey;
+
+    @Value("${anonymous.profile-url}")
+    private String profileUrl;
 }
