@@ -49,6 +49,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         request.setAttribute("author", jwtUtil.getUsername(token));
         request.setAttribute("profileImage",jwtUtil.getProfileImage(token));
         return true;
+
     }
 
 }
