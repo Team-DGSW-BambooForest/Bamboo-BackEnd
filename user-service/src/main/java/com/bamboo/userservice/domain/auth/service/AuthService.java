@@ -48,7 +48,7 @@ public class AuthService {
     }
 
 
-    private Mono<DAuthResponseDto> getDauthToken(String code){
+    private Mono<DAuthResponseDto> getDauthToken(String code) {
         DAuthRequestDto requestDto = DAuthRequestDto.builder()
                 .code(code)
                 .clientId(appProperties.getClientId())
@@ -61,12 +61,8 @@ public class AuthService {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestDto)
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientResponse -> {
-                    return Mono.error(new GlobalException(HttpStatus.BAD_REQUEST, "변조된 code입니다."));
-                })
-                .onStatus(HttpStatus::is5xxServerError, clientResponse -> {
-                    return Mono.error(new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 통신 중 오류"));
-                })
+                .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new GlobalException(HttpStatus.BAD_REQUEST, "변조된 code입니다.")))
+                .onStatus(HttpStatus::is5xxServerError, clientResponse -> Mono.error(new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 통신 중 오류")))
                 .bodyToMono(DAuthResponseDto.class);
     }
 

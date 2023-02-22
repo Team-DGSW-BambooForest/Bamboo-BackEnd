@@ -18,5 +18,4 @@ public class AppProperties {
     private String clientSecret;
     private String authUrl;
     private String openApiUrl;
-
 }
