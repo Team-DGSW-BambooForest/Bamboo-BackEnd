@@ -9,9 +9,14 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 public class ConfigProperties  {
+
     @Value("${jwt.access-secret}")
     private String accessKey;
 
     @Value("${jwt.refresh-secret}")
     private String refreshKey;
+
+    @Value("${anonymous.profile-url}")
+    private String profileUrl;
+
 }
