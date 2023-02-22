@@ -28,6 +28,9 @@ public class Post {
 
     @Enumerated(EnumType.STRING)
     private PostStatus status;
+    public void setStatus(PostStatus status) {
+        this.status = status;
+    }
 
     @CreationTimestamp
     private LocalDateTime createdAt;
