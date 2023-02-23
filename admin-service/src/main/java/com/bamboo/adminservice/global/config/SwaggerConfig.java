@@ -14,7 +14,7 @@ public class SwaggerConfig {
         Info info = new Info()
                 .title("대대숲 admin-service api")
                 .version("version 1.0")
-                .description("대대숲 admin-service api 문서, ip : 3.36.150.248");
+                .description("대대숲 admin-service api 문서, ip : 54.180.217.199");
 
         return new OpenAPI()
                 .components(new Components())

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class AdminService {
     private final PostFeignClient postFeignClient;
 
-    public String postStatus(Long postId, AdminRequestDto adminRequestDto){
-        return postFeignClient.postStatus(postId, adminRequestDto);
+    public void postStatus(Long postId, AdminRequestDto adminRequestDto){
+        postFeignClient.postStatus(postId, adminRequestDto);
     }
 }
