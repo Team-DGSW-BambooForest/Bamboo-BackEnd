@@ -1,9 +1,11 @@
 package com.bamboo.adminservice.global.intercetor;
 
 import com.bamboo.adminservice.global.annotation.AuthToken;
+import com.bamboo.adminservice.global.exception.GlobalException;
 import com.bamboo.adminservice.global.util.AuthorizationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -35,6 +37,9 @@ public class HttpIntercetor implements HandlerInterceptor {
         authorizationUtil.validateToken(token);
 
         String role = authorizationUtil.getSubject(token);
+        if (role.equals("USER")){
+            throw new GlobalException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+        }
         request.setAttribute("role", role);
 
         return true;
