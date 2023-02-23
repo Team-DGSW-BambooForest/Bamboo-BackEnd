@@ -3,6 +3,7 @@ package com.bamboo.userservice.global.jwt;
 
 import com.bamboo.userservice.domain.user.UserEntity;
 import com.bamboo.userservice.domain.user.domain.repository.UserRepository;
+import com.bamboo.userservice.domain.user.domain.type.Role;
 import com.bamboo.userservice.global.config.AppProperties;
 import com.bamboo.userservice.global.config.JwtProperties;
 import com.bamboo.userservice.global.enums.JwtType;
@@ -22,7 +23,7 @@ public class TokenProvider {
     private final AppProperties appProperties;
     private final UserRepository userRepository;
 
-    public String generateToken(String name, String profileImage, JwtType jwtType) {
+    public String generateToken(String name, String profileImage, Role role, JwtType jwtType) {
         Date expiration = new Date();
         expiration = (jwtType == JwtType.ACCESS_TOKEN)
                 ? new Date(expiration.getTime() + jwtProperties.getAccessExpire())
@@ -34,6 +35,7 @@ public class TokenProvider {
         return Jwts.builder()
                 .claim("name", name)
                 .claim("profileImage", profileImage)
+                .claim("role", role)
                 .setSubject(jwtType.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(expiration)
@@ -78,6 +80,6 @@ public class TokenProvider {
         UserEntity member = userRepository
                 .findByName(claims.get("name").toString())
                 .orElseThrow(UserEntity.NotFoundException::new);
-        return generateToken(member.getName(), member.getProfileImage(), JwtType.ACCESS_TOKEN);
+        return generateToken(member.getName(), member.getProfileImage(), member.getRole(), JwtType.ACCESS_TOKEN);
     }
 }
