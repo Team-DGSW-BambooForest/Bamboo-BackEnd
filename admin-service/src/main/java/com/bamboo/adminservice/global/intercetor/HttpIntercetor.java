@@ -1,11 +1,9 @@
 package com.bamboo.adminservice.global.intercetor;
 
 import com.bamboo.adminservice.global.annotation.AuthToken;
-import com.bamboo.adminservice.global.exception.GlobalException;
 import com.bamboo.adminservice.global.util.AuthorizationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -34,9 +32,7 @@ public class HttpIntercetor implements HandlerInterceptor {
         }
 
         String token = authorizationUtil.extract(request, "Bearer");
-        if (token.equals("")) {
-            throw new GlobalException(HttpStatus.NOT_FOUND ,"토큰이 없어요");
-        }
+        authorizationUtil.validateToken(token);
 
         String role = authorizationUtil.getSubject(token);
         request.setAttribute("role", role);
