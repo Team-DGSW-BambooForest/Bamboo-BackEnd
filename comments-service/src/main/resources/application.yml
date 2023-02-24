@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: comment
+  profiles:
+    active: config
+  config:
+    import: optional:configserver:http://13.209.33.18:8888
