@@ -60,7 +60,7 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentRo> getCommentByCommentId(Long id) {
-        List<Comment> comments = commentRepository.findAllByParent(id);
+        List<Comment> comments = commentRepository.findAllByParentId(id);
         List<CommentRo> commetList = comments.stream().map
                         (it -> new CommentRo(it.getId(), it.getProfileImage(), it.getWriter(), it.getContent(), timeAgoFormatter.format(it.getCreatedAt())))
                 .collect(Collectors.toList());
