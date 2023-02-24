@@ -21,73 +21,30 @@ spring:
             - name: Path
               args:
                 patterns: /user/**
-#          metadata:
-#            cors
-#            allowedOrigins: '*'
-#            allowedMethods:
-#              - GET
-#              - POST
-#            allowedHeaders: '*'
-#            maxAge: 30
         - id: post-service
           uri: http://3.36.150.248:7001
           predicates:
             - name: Path
               args:
                 patterns: /post/**
-#          metadata:
-#            cors
-#            allowedOrigins: '*'
-#            allowedMethods:
-#              - GET
-#              - POST
-#            allowedHeaders: '*'
-#            maxAge: 30
+        - id: admin-service
+          uri: http://54.180.217.199:7003/
+          predicates:
+            - name: Path
+              args:
+                patterns: /admin/**
         - id: upload-service
           uri: http://43.200.19.203:7005
           predicates:
             - name: Path
               args:
                 patterns: /upload/**
-#          metadata:
-#            cors
-#            allowedOrigins: '*'
-#            allowedMethods:
-#              - GET
-#              - POST
-#            allowedHeaders: '*'
-#            maxAge: 30
-#            - name: Method
-#              args:
-#                methods:
-#                  - POST
-#          filters:
-#            - name: CircuitBreaker
-#              args:
-#                name: recruitlist
-#                fallbackUri: forward:/fallbacks/7
-#            - name: RewritePath
-#              args:
-#                regexp: /user-service/(?<path>.*)
-#                replacement: /$\{path}
-#            - RemoveRequestHeader=Cookie
-#            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-#        - id: post-service
-#          uri: lb://POST-SERVICE
-#          predicates:
-#            - Path=/post-service/
-#            - Method=POST
-#          filters:
-#            - RemoveRequestHeader-Cookie
-#            - RewritePath=/post-service/(?<segment>.*), /$\{segment}
-#        - id: upload-service
-#            uri: lb://UPLOAD-SERVICE
-#            predicates:
-#              - Path=/upload-service/
-#              - Method=POST
-#            filters:
-#              - RemoveRequestHeader-Cookie
-#              - RewritePath=/upload-service/(?<segment>.*), /$\{segment}
+        - id: comment-service
+          uri: http://54.180.217.199:7003/
+          predicates:
+            - name: Path
+              args:
+                patterns: /comment/**
 
 eureka:
   client:
