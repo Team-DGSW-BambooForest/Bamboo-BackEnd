@@ -37,14 +37,14 @@ public class AuthInterceptor implements HandlerInterceptor {
         String token = jwtUtil.extract(request, "Bearer");
 
         if(token.equals("")) {
-            request.setAttribute("author", "익명의 대소고인");
+            request.setAttribute("writer", "익명의 대소고인");
             request.setAttribute("profileImage", configProperties.getProfileUrl());
             return true;
         }
 
         jwtUtil.validateToken(token);
 
-        request.setAttribute("author", jwtUtil.getUsername(token));
+        request.setAttribute("writer", jwtUtil.getUsername(token));
         request.setAttribute("profileImage",jwtUtil.getProfileImage(token));
         return true;
 

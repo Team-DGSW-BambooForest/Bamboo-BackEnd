@@ -9,6 +9,8 @@ public class CommentRo {
 
     private Long commentId;
 
+    private String profileImage;
+
     private String writer;
 
     private String cotent;
