@@ -14,7 +14,7 @@ public class SwaggerConfig {
         Info info = new Info()
                 .title("대대숲 comment-service api")
                 .version("version 1.0")
-                .description("대대숲 post-service api 문서, ip : 3.36.150.248");
+                .description("대대숲 comment-service api 문서, ip : 3.36.150.248");
 
         return new OpenAPI()
                 .components(new Components())
