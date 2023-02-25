@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @Query(value = "select * from `bamboo`.`comment` as comment where comment.parent_id is null and comment.post_id = ?", nativeQuery = true)
+    @Query(value = "select * from `bamboo`.`comment` as comment where comment.parent_id = 0 and comment.post_id = ?", nativeQuery = true)
     List<Comment> findParentCommentByPostId(Long id);
 
     List<Comment> findAllByParentId(Long id);

@@ -31,7 +31,7 @@ public class CommentService {
             String profileImage
     ) {
 
-        if(request.getParentCommnetId() != null) {
+        if(request.getParentCommnetId() != 0) {
             commentRepository.findById(request.getParentCommnetId())
                     .orElseThrow(() -> CommentNotFoundException.EXCEPTION);
         }
