@@ -1,11 +1,9 @@
 package com.bamboo.commentsservice.domain.comment.presentation;
 
+import com.bamboo.commentsservice.domain.comment.presentation.dto.request.CommentRequest;
 import com.bamboo.commentsservice.domain.comment.presentation.dto.response.CommentRo;
 import com.bamboo.commentsservice.domain.comment.service.CommentService;
-import com.bamboo.commentsservice.domain.comment.domain.Comment;
-import com.bamboo.commentsservice.domain.comment.presentation.dto.request.CommentRequest;
 import com.bamboo.commentsservice.global.annotation.AuthToken;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,4 +42,8 @@ public class CommentController {
         return commentService.getCommentByCommentId(id);
     }
 
+    @GetMapping("/comments/{post-id}")
+    public List<CommentRo> getComments(@PathVariable("post-id") Long postId){
+        return commentService.getCommentsByPostId(postId);
+    }
 }

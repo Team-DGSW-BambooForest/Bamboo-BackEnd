@@ -3,6 +3,7 @@ package com.bamboo.commentsservice.domain.comment.service;
 import com.bamboo.commentsservice.domain.comment.domain.Comment;
 import com.bamboo.commentsservice.domain.comment.domain.repository.CommentRepository;
 import com.bamboo.commentsservice.domain.comment.presentation.dto.request.CommentRequest;
+import com.bamboo.commentsservice.domain.comment.presentation.dto.response.ChildCommentRo;
 import com.bamboo.commentsservice.domain.comment.presentation.dto.response.CommentRo;
 import com.bamboo.commentsservice.global.exception.CommentNotFoundException;
 import com.bamboo.commentsservice.global.util.TimeAgoFormatter;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +56,7 @@ public class CommentService {
         return commentRepository.countAllByPostId(id);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //댓글
     public List<CommentRo> getParentCommentByPostId(Long id) {
         List<Comment> comments = commentRepository.findParentCommentByPostId(id);
         List<CommentRo> commetList = comments.stream().map
@@ -63,7 +65,7 @@ public class CommentService {
         return commetList;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //대댓글
     public List<CommentRo> getCommentByCommentId(Long id) {
         List<Comment> comments = commentRepository.findAllByParentId(id);
         List<CommentRo> commetList = comments.stream().map
@@ -72,4 +74,25 @@ public class CommentService {
         return commetList;
     }
 
+    @Transactional(readOnly = true)
+    public List<CommentRo> getCommentsByPostId(Long postId) {
+        List<Comment> parentComments = commentRepository.findParentCommentByPostId(postId);
+
+        List<CommentRo> commentRoList = new ArrayList<>();
+        for (Comment parentComment : parentComments) {
+            CommentRo parentCommentRo = new CommentRo(parentComment.getId(), parentComment.getProfileImage(),
+                    parentComment.getWriter(), parentComment.getContent(), timeAgoFormatter.format(parentComment.getCreatedAt()));
+            commentRoList.add(parentCommentRo);
+
+            // 자식 댓글 조회 및 추가
+            List<Comment> childComments = commentRepository.findAllByParentId(parentComment.getId());
+            for (Comment childComment : childComments) {
+                ChildCommentRo childCommentRo = new ChildCommentRo(childComment.getId(), childComment.getProfileImage(),
+                        childComment.getWriter(), childComment.getContent(), timeAgoFormatter.format(childComment.getCreatedAt()));
+                parentCommentRo.addChildComment(childCommentRo);
+            }
+        }
+
+        return commentRoList;
+    }
 }
