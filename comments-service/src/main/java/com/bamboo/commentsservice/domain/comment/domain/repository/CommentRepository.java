@@ -15,4 +15,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> findAllByParentId(Long id);
 
+    Integer countAllByPostId(Long id);
+
 }

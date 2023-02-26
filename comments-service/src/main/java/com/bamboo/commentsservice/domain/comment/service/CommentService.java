@@ -50,6 +50,11 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
+    public Integer getCommentCountByPostId(Long id) {
+        return commentRepository.countAllByPostId(id);
+    }
+
+    @Transactional(readOnly = true)
     public List<CommentRo> getParentCommentByPostId(Long id) {
         List<Comment> comments = commentRepository.findParentCommentByPostId(id);
         List<CommentRo> commetList = comments.stream().map
