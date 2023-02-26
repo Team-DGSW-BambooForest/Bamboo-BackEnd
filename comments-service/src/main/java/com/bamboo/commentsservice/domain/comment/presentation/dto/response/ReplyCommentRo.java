@@ -4,12 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor @NoArgsConstructor
-public class ChildCommentRo {
-    private Long id;
-    private String profileImage;
-    private String writer;
-    private String content;
-    private String createdAt;
+public class ReplyCommentRo {
+    private CommentRo comment;
+    private List<CommentRo> Reply;
 }

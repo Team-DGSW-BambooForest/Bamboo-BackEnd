@@ -3,7 +3,7 @@ package com.bamboo.commentsservice.domain.comment.service;
 import com.bamboo.commentsservice.domain.comment.domain.Comment;
 import com.bamboo.commentsservice.domain.comment.domain.repository.CommentRepository;
 import com.bamboo.commentsservice.domain.comment.presentation.dto.request.CommentRequest;
-import com.bamboo.commentsservice.domain.comment.presentation.dto.response.ChildCommentRo;
+import com.bamboo.commentsservice.domain.comment.presentation.dto.response.ReplyCommentRo;
 import com.bamboo.commentsservice.domain.comment.presentation.dto.response.CommentRo;
 import com.bamboo.commentsservice.global.exception.CommentNotFoundException;
 import com.bamboo.commentsservice.global.util.TimeAgoFormatter;
@@ -75,24 +75,23 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentRo> getCommentsByPostId(Long postId) {
+    public List<ReplyCommentRo> getCommentsByPostId(Long postId) {
         List<Comment> parentComments = commentRepository.findParentCommentByPostId(postId);
 
-        List<CommentRo> commentRoList = new ArrayList<>();
+        List<ReplyCommentRo> fullComments = new ArrayList<>();
         for (Comment parentComment : parentComments) {
             CommentRo parentCommentRo = new CommentRo(parentComment.getId(), parentComment.getProfileImage(),
                     parentComment.getWriter(), parentComment.getContent(), timeAgoFormatter.format(parentComment.getCreatedAt()));
-            commentRoList.add(parentCommentRo);
 
-            // 자식 댓글 조회 및 추가
             List<Comment> childComments = commentRepository.findAllByParentId(parentComment.getId());
-            for (Comment childComment : childComments) {
-                ChildCommentRo childCommentRo = new ChildCommentRo(childComment.getId(), childComment.getProfileImage(),
-                        childComment.getWriter(), childComment.getContent(), timeAgoFormatter.format(childComment.getCreatedAt()));
-                parentCommentRo.addChildComment(childCommentRo);
-            }
+            List<CommentRo> childCommentRos = childComments.stream().map(childComment -> new CommentRo(childComment.getId(),
+                    childComment.getProfileImage(), childComment.getWriter(), childComment.getContent(),
+                    timeAgoFormatter.format(childComment.getCreatedAt()))).collect(Collectors.toList());
+
+            ReplyCommentRo fullComment = new ReplyCommentRo(parentCommentRo, childCommentRos);
+            fullComments.add(fullComment);
         }
 
-        return commentRoList;
+        return fullComments;
     }
 }

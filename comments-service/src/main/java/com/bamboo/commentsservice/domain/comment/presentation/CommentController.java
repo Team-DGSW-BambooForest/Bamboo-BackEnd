@@ -1,6 +1,7 @@
 package com.bamboo.commentsservice.domain.comment.presentation;
 
 import com.bamboo.commentsservice.domain.comment.presentation.dto.request.CommentRequest;
+import com.bamboo.commentsservice.domain.comment.presentation.dto.response.ReplyCommentRo;
 import com.bamboo.commentsservice.domain.comment.presentation.dto.response.CommentRo;
 import com.bamboo.commentsservice.domain.comment.service.CommentService;
 import com.bamboo.commentsservice.global.annotation.AuthToken;
@@ -43,7 +44,7 @@ public class CommentController {
     }
 
     @GetMapping("/comments/{post-id}")
-    public List<CommentRo> getComments(@PathVariable("post-id") Long postId){
+    public List<ReplyCommentRo> getComments(@PathVariable("post-id") Long postId){
         return commentService.getCommentsByPostId(postId);
     }
 }
