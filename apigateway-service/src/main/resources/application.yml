@@ -40,7 +40,7 @@ spring:
               args:
                 patterns: /upload/**
         - id: comment-service
-          uri: http://54.180.217.199:7003/
+          uri: http://54.180.217.199:7004/
           predicates:
             - name: Path
               args:
