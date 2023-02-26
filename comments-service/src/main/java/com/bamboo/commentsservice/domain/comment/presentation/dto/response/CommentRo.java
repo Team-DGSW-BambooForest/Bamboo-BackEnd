@@ -13,7 +13,7 @@ public class CommentRo {
 
     private String writer;
 
-    private String cotent;
+    private String content;
 
     private String diffTime;
 }

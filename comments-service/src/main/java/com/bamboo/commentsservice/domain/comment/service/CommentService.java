@@ -31,15 +31,15 @@ public class CommentService {
             String profileImage
     ) {
 
-        if(request.getParentCommnetId() != 0) {
-            commentRepository.findById(request.getParentCommnetId())
+        if(request.getParentCommentId() != 0) {
+            commentRepository.findById(request.getParentCommentId())
                     .orElseThrow(() -> CommentNotFoundException.EXCEPTION);
         }
 
         Comment comment = Comment.builder()
                 .writer(writer)
                 .profileImage(profileImage)
-                .parentId(request.getParentCommnetId())
+                .parentId(request.getParentCommentId())
                 .postId(request.getPostId())
                 .content(request.getContent())
                 .build();
