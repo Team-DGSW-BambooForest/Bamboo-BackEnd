@@ -29,6 +29,11 @@ public class CommentController {
         return commentService.createComment(request, writer, profileImage);
     }
 
+    @GetMapping("/count/{post-id}")
+    public Integer getCommentCountByPostId(@PathVariable("post-id") Long postId) {
+        return commentService.getCommentCountByPostId(postId);
+    }
+
     @GetMapping("/{post-id}")
     public List<CommentRo> getParentCommentByPostId(@PathVariable("post-id") Long postId) {
         return commentService.getParentCommentByPostId(postId);
