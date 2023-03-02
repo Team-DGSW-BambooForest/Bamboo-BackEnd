@@ -13,25 +13,21 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UploadService {
 
     private final AmazonS3Client amazonS3Client;
-    private static final String S3Bucket = "bamboodgsw";
 
     public void uploadImage(Long postId, MultipartFile file) {
         try {
-            log.info(file.toString());
             String originName = "image/image_" + postId;
             long size = file.getSize();
-            log.info(originName);
 
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentType(file.getContentType());
             objectMetadata.setContentLength(size);
 
             amazonS3Client.putObject(
-                    new PutObjectRequest(S3Bucket, originName, file.getInputStream(), objectMetadata)
+                    new PutObjectRequest("bamboodgsw", originName, file.getInputStream(), objectMetadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead)
             );
         } catch (Exception e) {
