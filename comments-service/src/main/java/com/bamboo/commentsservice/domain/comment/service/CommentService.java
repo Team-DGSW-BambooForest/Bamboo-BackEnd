@@ -3,9 +3,10 @@ package com.bamboo.commentsservice.domain.comment.service;
 import com.bamboo.commentsservice.domain.comment.domain.Comment;
 import com.bamboo.commentsservice.domain.comment.domain.repository.CommentRepository;
 import com.bamboo.commentsservice.domain.comment.presentation.dto.request.CommentRequest;
-import com.bamboo.commentsservice.domain.comment.presentation.dto.response.ReplyCommentRo;
 import com.bamboo.commentsservice.domain.comment.presentation.dto.response.CommentRo;
+import com.bamboo.commentsservice.domain.comment.presentation.dto.response.ReplyCommentRo;
 import com.bamboo.commentsservice.global.exception.CommentNotFoundException;
+import com.bamboo.commentsservice.global.exception.PostCommentNotFoundException;
 import com.bamboo.commentsservice.global.util.TimeAgoFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +57,7 @@ public class CommentService {
         return commentRepository.countAllByPostId(id);
     }
 
-    @Transactional(readOnly = true) //댓글
+    @Transactional(readOnly = true)
     public List<CommentRo> getParentCommentByPostId(Long id) {
         List<Comment> comments = commentRepository.findParentCommentByPostId(id);
         List<CommentRo> commetList = comments.stream().map
@@ -65,7 +66,7 @@ public class CommentService {
         return commetList;
     }
 
-    @Transactional(readOnly = true) //대댓글
+    @Transactional(readOnly = true)
     public List<CommentRo> getCommentByCommentId(Long id) {
         List<Comment> comments = commentRepository.findAllByParentId(id);
         List<CommentRo> commetList = comments.stream().map
@@ -77,6 +78,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<ReplyCommentRo> getCommentsByPostId(Long postId) {
         List<Comment> parentComments = commentRepository.findParentCommentByPostId(postId);
+        if(parentComments.toString().equals("[]")) throw new PostCommentNotFoundException();
 
         List<ReplyCommentRo> fullComments = new ArrayList<>();
         for (Comment parentComment : parentComments) {
@@ -91,7 +93,6 @@ public class CommentService {
             ReplyCommentRo fullComment = new ReplyCommentRo(parentCommentRo, childCommentRos);
             fullComments.add(fullComment);
         }
-
         return fullComments;
     }
 }
