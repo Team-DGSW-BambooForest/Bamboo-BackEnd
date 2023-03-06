@@ -23,10 +23,10 @@ public class UploadController {
     }
 
     @GetMapping("/{postId}")
-    public String getImage(
+    public String getImageUrl(
             @PathVariable("postId") Long postId
     ) {
-        return "https://bamboodgsw.s3.ap-northeast-2.amazonaws.com/image/image_" + postId;
+        return uploadService.getImageUrl(postId);
     }
 
 }

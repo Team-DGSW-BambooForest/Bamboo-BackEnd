@@ -16,5 +16,6 @@ public class AWSProperties {
     private String accessKey;
     private String secretKey;
     private String region;
+    private String bucket;
 
 }
