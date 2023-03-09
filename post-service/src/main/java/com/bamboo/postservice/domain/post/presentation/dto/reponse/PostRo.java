@@ -21,6 +21,4 @@ public class PostRo {
 
     private LocalDateTime createdAt;
 
-    private List<TagRo> hashTags;
-
 }
