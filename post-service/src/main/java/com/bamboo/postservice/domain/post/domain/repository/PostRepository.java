@@ -12,6 +12,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findAllByStatus(PostStatus status, Pageable pageable);
 
-    Page<Post> findAllByContentContaining(String word, Pageable pageable);
+    Page<Post> findAllByContentContainingAndStatus(String word, PostStatus postStatus, Pageable pageable);
 
 }
