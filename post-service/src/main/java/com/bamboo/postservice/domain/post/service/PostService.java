@@ -37,7 +37,6 @@ public class PostService {
                 .status(PostStatus.HOLD)
                 .build();
 
-
         postRepository.save(post);
 
         return ResponseEntity.status(201).body(post.getPostId());
@@ -67,7 +66,7 @@ public class PostService {
     public PostListRo getPostByword(int page, String word) {
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.DESC, "postId");
 
-        Page<Post> posts = postRepository.findAllByContentContaining(word, pageable);
+        Page<Post> posts = postRepository.findAllByContentContainingAndStatus(word, PostStatus.ALLOWED, pageable);
 
         return postListBuilder.Builder(posts);
     }
@@ -86,8 +85,9 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> PostNotFoundException.EXPECTION);
 
-        if(post.getStatus().equals(PostStatus.ALLOWED))
+        if(post.getStatus().equals(PostStatus.ALLOWED)) {
             throw PostAlreadyAllowedException.EXCEPTION;
+        }
 
         post.setStatus(status);
         postRepository.save(post);
