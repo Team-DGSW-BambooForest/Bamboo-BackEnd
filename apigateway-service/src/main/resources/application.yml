@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+server:
+  port: 8081
+
+>>>>>>> fdeaf202516cee6a8cb09b706cf78736e0cb2f44
 spring:
   application:
     name: gateway
