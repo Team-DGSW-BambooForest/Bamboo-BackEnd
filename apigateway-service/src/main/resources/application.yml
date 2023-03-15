@@ -1,54 +1,7 @@
-server:
-  port: 8081
-
 spring:
   application:
-    name: apigateway-service
-  cloud:
-    gateway:
-      globalcors:
-        cors-configurations:
-          "[/**]":
-            allowedOrigins: "*"
-            allowedHeaders: "*"
-            allowedMethods: "*"
-            allow-credentials: false
-            max-age: 30
-      routes:
-        - id: user-service
-          uri: http://3.36.150.248:7000
-          predicates:
-            - name: Path
-              args:
-                patterns: /user/**
-        - id: post-service
-          uri: http://43.200.19.203:7001
-          predicates:
-            - name: Path
-              args:
-                patterns: /post/**
-        - id: admin-service
-          uri: http://54.180.217.199:7003/
-          predicates:
-            - name: Path
-              args:
-                patterns: /admin/**
-        - id: upload-service
-          uri: http://43.200.19.203:7005
-          predicates:
-            - name: Path
-              args:
-                patterns: /upload/**
-        - id: comment-service
-          uri: http://54.180.217.199:7004/
-          predicates:
-            - name: Path
-              args:
-                patterns: /comment/**
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://13.209.33.18:8761/eureka
+    name: gateway
+  profiles:
+    active: config
+  config:
+    import: optional:configserver:http://43.200.66.133:8888
