@@ -5,4 +5,3 @@ spring:
     active: config
   config:
     import: optional:configserver:http://43.200.66.133:8888
-    use-legacy-processing: true
