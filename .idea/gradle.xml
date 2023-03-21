@@ -5,10 +5,28 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/admin-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/admin-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/apigateway-service" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/apigateway-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/comments-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/comments-service" />
           </set>
         </option>
       </GradleProjectSettings>
