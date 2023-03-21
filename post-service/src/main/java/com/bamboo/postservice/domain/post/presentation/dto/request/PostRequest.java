@@ -13,5 +13,4 @@ public class PostRequest {
     @NotBlank(message = "내욜을 입력해주세요")
     private String content;
 
-    private String[] hashtags;
 }

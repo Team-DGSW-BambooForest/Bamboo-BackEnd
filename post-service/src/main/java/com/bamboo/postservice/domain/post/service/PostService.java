@@ -1,17 +1,15 @@
 package com.bamboo.postservice.domain.post.service;
 
-import com.bamboo.postservice.domain.post.domain.HashTag;
 import com.bamboo.postservice.domain.post.domain.Post;
-import com.bamboo.postservice.domain.post.domain.repository.HashTagRepository;
 import com.bamboo.postservice.domain.post.domain.repository.PostRepository;
 import com.bamboo.postservice.domain.post.domain.status.PostStatus;
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostListRo;
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostRo;
-import com.bamboo.postservice.domain.post.presentation.dto.reponse.TagRo;
 import com.bamboo.postservice.domain.post.presentation.dto.request.PostRequest;
 import com.bamboo.postservice.global.exception.PostAlreadyAllowedException;
 import com.bamboo.postservice.global.exception.PostNotAllowedException;
 import com.bamboo.postservice.global.exception.PostNotFoundException;
+import com.bamboo.postservice.global.util.PostListBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,17 +19,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
-
 @RequiredArgsConstructor
 @Service
 public class PostService {
+
     private final PostRepository postRepository;
-    private final HashTagRepository hashTagRepository;
+
+    private final PostListBuilder postListBuilder;
 
     @Transactional
     public ResponseEntity<?> creatPost(PostRequest request, String author, String profileImage) {
@@ -41,18 +35,7 @@ public class PostService {
                 .profileImage(profileImage)
                 .author(author)
                 .status(PostStatus.HOLD)
-                .hashTagList(new ArrayList<>())
                 .build();
-
-        List<HashTag> hashTagList = Arrays.stream(request.getHashtags())
-                .map(it -> HashTag.builder()
-                        .hashTag(it)
-                        .build())
-                .collect(toList());
-
-        for (HashTag hashTag : hashTagList) {
-            post.addHashTag(hashTag);
-        }
 
         postRepository.save(post);
 
@@ -69,11 +52,7 @@ public class PostService {
             throw PostNotAllowedException.EXCEPTION;
         }
 
-        List<TagRo> hashTagList = hashTagRepository.findHashTagByPost_PostId(id)
-                .stream().map(it -> new TagRo(it.getTagId(), it.getHashTag()))
-                .collect(toList());
-
-        return new PostRo(post.getPostId(), post.getAuthor(), post.getProfileImage(), post.getContent(), post.getCreatedAt(), hashTagList);
+        return new PostRo(post.getPostId(), post.getAuthor(), post.getProfileImage(), post.getContent(), post.getCreatedAt());
     }
     @Transactional(readOnly = true)
     public PostListRo getAllPost(int page) {
@@ -81,28 +60,15 @@ public class PostService {
 
         Page<Post> posts = postRepository.findAllByStatus(PostStatus.ALLOWED,pageable);
 
-        List<PostRo> postList = posts.stream().map(it ->
-                    new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(),hashTagRepository.findAllByPost_PostId(it.getPostId()))
-                ).collect(toList());
-
-        return postListRoBuilder(postList);
+        return postListBuilder.Builder(posts);
     }
 
-    @Transactional(readOnly = true)
-    public PostListRo getPostByHashTag(int page, String tag) {
-        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.DESC, "post_id");
+    public PostListRo getPostByword(int page, String word) {
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.DESC, "postId");
 
-        List<Long> postIds = hashTagRepository.findDistinctByHashTagContaining(tag, pageable);
+        Page<Post> posts = postRepository.findAllByContentContainingAndStatus(word, PostStatus.ALLOWED, pageable);
 
-        List<Post> posts = postIds.stream().map(postRepository::findByPostId)
-                .filter(i -> i.getStatus().equals(PostStatus.ALLOWED))
-                .collect(toList());
-
-        List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
-        ).collect(toList());
-
-        return postListRoBuilder(postList);
+        return postListBuilder.Builder(posts);
     }
 
     @Transactional(readOnly = true)
@@ -111,11 +77,7 @@ public class PostService {
 
         Page<Post> posts = postRepository.findAllByStatus(PostStatus.HOLD, pageable);
 
-        List<PostRo> postList = posts.stream().map(it ->
-                new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(), hashTagRepository.findAllByPost_PostId(it.getPostId()))
-        ).collect(toList());
-
-        return postListRoBuilder(postList);
+        return postListBuilder.Builder(posts);
     }
 
     @Transactional
@@ -123,17 +85,12 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> PostNotFoundException.EXPECTION);
 
-        if(post.getStatus().equals(PostStatus.ALLOWED))
+        if(post.getStatus().equals(PostStatus.ALLOWED)) {
             throw PostAlreadyAllowedException.EXCEPTION;
+        }
 
         post.setStatus(status);
         postRepository.save(post);
-    }
-
-    private PostListRo postListRoBuilder(List<PostRo> postRoList) {
-        return  PostListRo.builder()
-                .list(postRoList)
-                .build();
     }
 
 }

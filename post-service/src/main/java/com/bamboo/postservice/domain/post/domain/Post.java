@@ -9,7 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,21 +34,14 @@ public class Post {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<HashTag> hashTagList;
-    public void addHashTag(HashTag hashTag) {
-        hashTag.setPost(this);
-        getHashTagList().add(hashTag);
-    }
 
     @Builder
-    public Post(Long postId, String content, String profileImage, String author, PostStatus status, LocalDateTime createdAt, List<HashTag> hashTagList) {
+    public Post(Long postId, String content, String profileImage, String author, PostStatus status, LocalDateTime createdAt) {
         this.postId = postId;
         this.content = content;
         this.profileImage = profileImage;
         this.author = author;
         this.status = status;
         this.createdAt = createdAt;
-        this.hashTagList = hashTagList;
     }
 }

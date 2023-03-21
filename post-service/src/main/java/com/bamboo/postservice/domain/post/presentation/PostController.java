@@ -20,30 +20,36 @@ public class PostController {
     @PostMapping("/create")
     public ResponseEntity<?> creatPost(@RequestBody @Validated PostRequest request,
                                        @RequestAttribute String author,
-                                       @RequestAttribute String profileImage)
-    {
+                                       @RequestAttribute String profileImage) {
         return postService.creatPost(request, author, profileImage);
     }
 
     @GetMapping("/{id}")
-    public PostRo getPostById(@PathVariable("id") Long id) {
+    public PostRo getPostById(
+            @PathVariable("id") Long id) {
         return postService.getPostById(id);
     }
 
     @GetMapping("/list")
-    public PostListRo getALlPost(@RequestParam(value = "page", defaultValue = "1") Integer page) {
+    public PostListRo getALlPost(
+            @RequestParam(value = "page", defaultValue = "1") Integer page
+    ) {
         return postService.getAllPost(page);
     }
 
-    @GetMapping("/tag/{tag}")
-    public PostListRo getPostByHashtag(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                       @PathVariable("tag") String tag) {
-         return postService.getPostByHashTag(page, tag);
+    @GetMapping("/list/hold")
+    public PostListRo getUnauthorizedPost(
+            @RequestParam(value = "page", defaultValue = "1") Integer page
+    ) {
+        return postService.getUnauthorizedPost(page);
     }
 
-    @GetMapping("/list/hold")
-    public PostListRo getUnauthorizedPost(@RequestParam(value = "page", defaultValue = "1") Integer page) {
-        return postService.getUnauthorizedPost(page);
+    @GetMapping("/search/{word}")
+    public PostListRo getPostByword(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @PathVariable("word") String word
+    ) {
+        return postService.getPostByword(page, word);
     }
 
     @PatchMapping("/status/{post-id}")
