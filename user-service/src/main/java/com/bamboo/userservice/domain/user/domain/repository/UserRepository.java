@@ -1,6 +1,6 @@
 package com.bamboo.userservice.domain.user.domain.repository;
 
-import com.bamboo.userservice.domain.user.UserEntity;
+import com.bamboo.userservice.domain.user.domain.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

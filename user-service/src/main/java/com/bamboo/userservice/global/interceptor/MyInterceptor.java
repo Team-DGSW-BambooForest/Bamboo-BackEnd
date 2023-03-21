@@ -1,6 +1,7 @@
 package com.bamboo.userservice.global.interceptor;
 
-import com.bamboo.userservice.domain.user.UserEntity;
+import com.bamboo.userservice.domain.user.domain.UserEntity;
+import com.bamboo.userservice.domain.user.domain.exception.UserUnAuthenticationException;
 import com.bamboo.userservice.global.annotations.AuthToken;
 import com.bamboo.userservice.global.jwt.TokenProvider;
 import com.bamboo.userservice.global.util.AuthorizationUtil;
@@ -35,7 +36,7 @@ public class MyInterceptor implements HandlerInterceptor {
 
         String token = AuthorizationUtil.extract(request, "Bearer");
         if (token.equals("")) {
-            throw new UserEntity.UnAuthenticationException();
+            throw UserUnAuthenticationException.EXCEPTION;
         }
 
         UserEntity user = tokenProvider.validateToken(token);

@@ -1,6 +1,6 @@
 package com.bamboo.userservice.domain.auth.presentation.dto.response;
 
-import com.bamboo.userservice.domain.user.UserEntity;
+import com.bamboo.userservice.domain.user.domain.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

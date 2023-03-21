@@ -2,7 +2,7 @@ package com.bamboo.userservice.domain.user.service;
 
 import com.bamboo.userservice.domain.auth.presentation.dto.api.DOpenApiDto;
 import com.bamboo.userservice.domain.auth.presentation.dto.api.DodamInfoDto;
-import com.bamboo.userservice.domain.user.UserEntity;
+import com.bamboo.userservice.domain.user.domain.UserEntity;
 import com.bamboo.userservice.domain.user.domain.repository.UserRepository;
 import com.bamboo.userservice.global.config.ProfileImageProperties;
 import lombok.RequiredArgsConstructor;
