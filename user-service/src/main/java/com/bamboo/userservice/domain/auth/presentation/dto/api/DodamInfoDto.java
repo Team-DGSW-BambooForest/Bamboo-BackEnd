@@ -1,6 +1,6 @@
 package com.bamboo.userservice.domain.auth.presentation.dto.api;
 
-import com.bamboo.userservice.domain.user.UserEntity;
+import com.bamboo.userservice.domain.user.domain.UserEntity;
 import com.bamboo.userservice.domain.user.domain.type.Role;
 import lombok.AccessLevel;
 import lombok.Data;

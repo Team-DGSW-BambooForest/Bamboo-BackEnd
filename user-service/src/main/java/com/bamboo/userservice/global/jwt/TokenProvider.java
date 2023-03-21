@@ -1,16 +1,19 @@
 package com.bamboo.userservice.global.jwt;
 
 
-import com.bamboo.userservice.domain.user.UserEntity;
+import com.bamboo.userservice.domain.token.exception.TokenExpirationException;
+import com.bamboo.userservice.domain.token.exception.TokenForgeryException;
+import com.bamboo.userservice.domain.token.exception.TokenInternalServerErrorException;
+import com.bamboo.userservice.domain.token.exception.TokenNotFoundException;
+import com.bamboo.userservice.domain.user.domain.UserEntity;
+import com.bamboo.userservice.domain.user.domain.exception.UserNotFoundException;
 import com.bamboo.userservice.domain.user.domain.repository.UserRepository;
 import com.bamboo.userservice.domain.user.domain.type.Role;
 import com.bamboo.userservice.global.config.AppProperties;
 import com.bamboo.userservice.global.config.JwtProperties;
 import com.bamboo.userservice.global.enums.JwtType;
-import com.bamboo.userservice.global.exception.GlobalException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -52,13 +55,13 @@ public class TokenProvider {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            throw new GlobalException(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.");
+            throw TokenExpirationException.EXCEPTION;
         } catch (SignatureException | MalformedJwtException e) {
-            throw new GlobalException(HttpStatus.UNAUTHORIZED, "위조된 토큰입니다.");
+            throw TokenForgeryException.EXCEPTION;
         } catch (IllegalArgumentException e) {
-            throw new GlobalException(HttpStatus.BAD_REQUEST, "토큰이 존재하지 않습니다.");
+            throw TokenNotFoundException.EXCEPTION;
         } catch (Exception e) {
-            throw new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "토큰 서비스와의 오류가 발생하였습니다.");
+            throw TokenInternalServerErrorException.EXCEPTION;
         }
     }
 
@@ -68,18 +71,22 @@ public class TokenProvider {
                                 .get("name")
                                 .toString())
                 )
-                .orElseThrow(UserEntity.NotFoundException::new);
+                .orElseThrow(() ->
+                        UserNotFoundException.EXCEPTION
+                );
     }
 
     public String refreshToken(String refreshToken) {
         if (refreshToken == null || refreshToken.trim().isEmpty()) {
-            throw new GlobalException(HttpStatus.BAD_REQUEST, "토큰이 존재하지 않습니다.");
+            throw TokenNotFoundException.EXCEPTION;
         }
 
         Claims claims = parseToken(refreshToken, JwtType.REFRESH_TOKEN);
         UserEntity member = userRepository
                 .findByName(claims.get("name").toString())
-                .orElseThrow(UserEntity.NotFoundException::new);
+                .orElseThrow(() ->
+                        UserNotFoundException.EXCEPTION
+                );
         return generateToken(member.getName(), member.getProfileImage(), member.getRole(), JwtType.ACCESS_TOKEN);
     }
 }
