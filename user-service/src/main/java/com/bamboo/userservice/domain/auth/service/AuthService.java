@@ -60,11 +60,9 @@ public class AuthService {
                 .uri("/token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestDto)
-                .exchangeToMono(clientResponse ->
-                                clientResponse.bodyToMono(DAuthResponseDto.class)
-                                        .doOnError(error -> log.info(String.valueOf(error)))
-
-                        );
+                .exchangeToMono(response -> {
+                            if(response.h)
+                        });
     }
 
     @Transactional
