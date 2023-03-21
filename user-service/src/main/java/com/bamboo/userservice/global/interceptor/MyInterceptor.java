@@ -6,14 +6,12 @@ import com.bamboo.userservice.global.annotations.AuthToken;
 import com.bamboo.userservice.global.jwt.TokenProvider;
 import com.bamboo.userservice.global.util.AuthorizationUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class MyInterceptor implements HandlerInterceptor {
@@ -23,7 +21,6 @@ public class MyInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        log.info("[{}] request uri: {}", request.getMethod(), request.getRequestURI());
 
         if (!(handler instanceof HandlerMethod)) {
             return true;

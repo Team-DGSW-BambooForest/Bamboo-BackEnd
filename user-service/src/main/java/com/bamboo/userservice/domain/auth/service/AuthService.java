@@ -1,5 +1,7 @@
 package com.bamboo.userservice.domain.auth.service;
 
+import com.bamboo.userservice.domain.auth.exception.DauthCodeBadRequestException;
+import com.bamboo.userservice.domain.auth.exception.DauthServerErrorException;
 import com.bamboo.userservice.domain.auth.presentation.dto.api.DOpenApiDto;
 import com.bamboo.userservice.domain.auth.presentation.dto.request.DAuthRequestDto;
 import com.bamboo.userservice.domain.auth.presentation.dto.request.LoginRequestDto;
@@ -13,8 +15,8 @@ import com.bamboo.userservice.global.enums.JwtType;
 import com.bamboo.userservice.global.jwt.TokenProvider;
 import com.bamboo.userservice.global.webclient.WebClientConfig;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -22,7 +24,6 @@ import reactor.core.publisher.Mono;
 import javax.transaction.Transactional;
 import java.util.Objects;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -61,7 +62,15 @@ public class AuthService {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestDto)
                 .exchangeToMono(response -> {
-                            if(response.h)
+                            if(response.statusCode().equals(HttpStatus.OK)) {
+                                return response.bodyToMono(DAuthResponseDto.class);
+                            }
+                            else if(response.statusCode().equals(HttpStatus.FORBIDDEN)){
+                                throw DauthCodeBadRequestException.EXCEPTION;
+                            }
+                            else {
+                                throw DauthServerErrorException.EXCEPTION;
+                            }
                         });
     }
 
