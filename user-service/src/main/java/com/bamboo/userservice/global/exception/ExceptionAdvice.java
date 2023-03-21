@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionAdvice {
 
-    @ExceptionHandler(GlobalException.class)
-    protected ResponseEntity<ExceptionResponseDto> Exception(GlobalException e){
+    @ExceptionHandler(BusinessException.class)
+    protected ResponseEntity<ExceptionResponseDto> Exception(BusinessException e){
         ExceptionResponseDto responseDto = ExceptionResponseDto.builder()
                 .message(e.getMessage())
                 .status(e.getHttpStatus().value())

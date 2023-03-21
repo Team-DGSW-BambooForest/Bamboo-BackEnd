@@ -5,17 +5,16 @@ import com.bamboo.userservice.domain.auth.presentation.dto.request.DAuthRequestD
 import com.bamboo.userservice.domain.auth.presentation.dto.request.LoginRequestDto;
 import com.bamboo.userservice.domain.auth.presentation.dto.response.DAuthResponseDto;
 import com.bamboo.userservice.domain.auth.presentation.dto.response.LoginResponseDto;
-import com.bamboo.userservice.domain.user.UserEntity;
+import com.bamboo.userservice.domain.user.domain.UserEntity;
 import com.bamboo.userservice.domain.user.domain.type.Role;
 import com.bamboo.userservice.domain.user.service.UserService;
 import com.bamboo.userservice.global.config.AppProperties;
 import com.bamboo.userservice.global.enums.JwtType;
-import com.bamboo.userservice.global.exception.GlobalException;
 import com.bamboo.userservice.global.jwt.TokenProvider;
 import com.bamboo.userservice.global.webclient.WebClientConfig;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -23,6 +22,7 @@ import reactor.core.publisher.Mono;
 import javax.transaction.Transactional;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -60,10 +60,11 @@ public class AuthService {
                 .uri("/token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestDto)
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new GlobalException(HttpStatus.BAD_REQUEST, "변조된 code입니다.")))
-                .onStatus(HttpStatus::is5xxServerError, clientResponse -> Mono.error(new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 통신 중 오류")))
-                .bodyToMono(DAuthResponseDto.class);
+                .exchangeToMono(clientResponse ->
+                                clientResponse.bodyToMono(DAuthResponseDto.class)
+                                        .doOnError(error -> log.info(String.valueOf(error)))
+
+                        );
     }
 
     @Transactional
