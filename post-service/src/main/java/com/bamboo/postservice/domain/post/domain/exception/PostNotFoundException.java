@@ -1,8 +1,9 @@
-package com.bamboo.postservice.global.exception;
+package com.bamboo.postservice.domain.post.domain.exception;
 
+import com.bamboo.postservice.global.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
-public class PostNotFoundException extends BusinessException{
+public class PostNotFoundException extends BusinessException {
     public static final PostNotFoundException EXPECTION = new PostNotFoundException();
 
     private PostNotFoundException() {

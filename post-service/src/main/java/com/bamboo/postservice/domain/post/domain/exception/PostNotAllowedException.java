@@ -1,8 +1,9 @@
-package com.bamboo.postservice.global.exception;
+package com.bamboo.postservice.domain.post.domain.exception;
 
+import com.bamboo.postservice.global.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
-public class PostNotAllowedException extends BusinessException{
+public class PostNotAllowedException extends BusinessException {
 
     public static final PostNotAllowedException EXCEPTION = new PostNotAllowedException();
 
