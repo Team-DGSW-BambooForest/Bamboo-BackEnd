@@ -3,12 +3,13 @@ package com.bamboo.postservice.domain.post.service;
 import com.bamboo.postservice.domain.post.domain.Post;
 import com.bamboo.postservice.domain.post.domain.repository.PostRepository;
 import com.bamboo.postservice.domain.post.domain.status.PostStatus;
+import com.bamboo.postservice.domain.post.exception.PostEmptyException;
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostListRo;
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostRo;
 import com.bamboo.postservice.domain.post.presentation.dto.request.PostRequest;
-import com.bamboo.postservice.domain.post.domain.exception.PostAlreadyAllowedException;
-import com.bamboo.postservice.domain.post.domain.exception.PostNotAllowedException;
-import com.bamboo.postservice.domain.post.domain.exception.PostNotFoundException;
+import com.bamboo.postservice.domain.post.exception.PostAlreadyAllowedException;
+import com.bamboo.postservice.domain.post.exception.PostNotAllowedException;
+import com.bamboo.postservice.domain.post.exception.PostNotFoundException;
 import com.bamboo.postservice.global.util.PostListBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -59,6 +60,9 @@ public class PostService {
         Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "postId");
 
         Page<Post> posts = postRepository.findAllByStatus(PostStatus.ALLOWED,pageable);
+
+        if(posts.isEmpty())
+            throw PostEmptyException.EXCEPTION;
 
         return postListBuilder.Builder(posts);
     }
