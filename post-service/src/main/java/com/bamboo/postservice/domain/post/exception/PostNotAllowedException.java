@@ -1,4 +1,4 @@
-package com.bamboo.postservice.domain.post.domain.exception;
+package com.bamboo.postservice.domain.post.exception;
 
 import com.bamboo.postservice.global.exception.BusinessException;
 import org.springframework.http.HttpStatus;

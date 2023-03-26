@@ -10,5 +10,7 @@ import java.util.List;
 @Builder
 public class PostListRo {
 
+    private boolean hasMorePage;
+    private int currentPage;
     private List<PostRo> list;
 }

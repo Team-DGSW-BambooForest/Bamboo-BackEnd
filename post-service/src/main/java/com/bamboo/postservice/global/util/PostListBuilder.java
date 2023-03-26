@@ -15,6 +15,8 @@ public class PostListBuilder {
     public PostListRo Builder(Page<Post> posts) {
 
         return PostListRo.builder()
+                .hasMorePage(posts.hasNext())
+                .currentPage(posts.getNumber() + 1)
                 .list(posts.stream().map(it ->
                         new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt())
                 ).collect(toList()))
