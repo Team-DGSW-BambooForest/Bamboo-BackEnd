@@ -77,7 +77,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostListRo getUnauthorizedPost(int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.ASC, "postId");
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.DESC, "postId");
 
         Page<Post> posts = postRepository.findAllByStatus(PostStatus.HOLD, pageable);
 
