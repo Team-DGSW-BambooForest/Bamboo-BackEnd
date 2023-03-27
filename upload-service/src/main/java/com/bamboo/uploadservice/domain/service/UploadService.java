@@ -4,14 +4,10 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
 import com.bamboo.uploadservice.global.config.AWSProperties;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class UploadService {
 
@@ -33,15 +29,18 @@ public class UploadService {
             );
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            amazonS3Client.shutdown();
         }
     }
 
     public String getImageUrl(Long postId) {
         try {
-            S3Object o = amazonS3Client.getObject(new GetObjectRequest(awsProperties.getBucket(), "image/image_"+postId));
             return amazonS3Client.getUrl(awsProperties.getBucket(), "image/image_"+postId).toString();
         } catch (AmazonS3Exception e) {
             return null;
+        } finally {
+            amazonS3Client.shutdown();
         }
     }
 
