@@ -40,7 +40,6 @@ public class UploadService {
 
     public String getImageUrl(Long postId) {
         try {
-            S3Object o = amazonS3Client.getObject(new GetObjectRequest(awsProperties.getBucket(), "image/image_"+postId));
             return amazonS3Client.getUrl(awsProperties.getBucket(), "image/image_"+postId).toString();
         } catch (AmazonS3Exception e) {
             return null;
