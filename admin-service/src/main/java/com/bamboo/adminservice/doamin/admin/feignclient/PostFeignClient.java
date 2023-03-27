@@ -13,4 +13,10 @@ public interface PostFeignClient {
     @RequestMapping(method = RequestMethod.PATCH, value = "/status/{post-id}")
     void postStatus(@PathVariable("post-id") Long postId,
                                 @RequestBody AdminRequestDto adminRequestDto);
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{post-id}")
+    void deletePost(@PathVariable("post-id") Long postId);
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{comment_id}")
+    void deleteComment(@PathVariable("comment_id") Long commentId);
 }

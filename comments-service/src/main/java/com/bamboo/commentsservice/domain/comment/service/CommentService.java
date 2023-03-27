@@ -95,4 +95,9 @@ public class CommentService {
         }
         return fullComments;
     }
+
+    @Transactional
+    public void deleteComment(Long commentId){
+        commentRepository.deleteById(commentId);
+    }
 }

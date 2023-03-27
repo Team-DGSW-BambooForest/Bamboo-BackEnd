@@ -60,4 +60,9 @@ public class PostController {
         postService.changeStatus(postId, request.getStatus());
     }
 
+    @DeleteMapping("/delete/{post-id}")
+    public void deletePost(@PathVariable("post-id") Long postId){
+        postService.deletePost(postId);
+    }
+
 }

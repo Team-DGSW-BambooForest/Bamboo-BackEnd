@@ -13,4 +13,12 @@ public class AdminService {
     public void postStatus(Long postId, AdminRequestDto adminRequestDto){
         postFeignClient.postStatus(postId, adminRequestDto);
     }
+
+    public void deletePost(Long postId){
+        postFeignClient.deletePost(postId);
+    }
+
+    public void deleteComment(Long commentId){
+        postFeignClient.deleteComment(commentId);
+    }
 }

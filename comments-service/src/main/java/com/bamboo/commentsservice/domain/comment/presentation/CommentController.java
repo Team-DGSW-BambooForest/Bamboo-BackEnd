@@ -47,4 +47,9 @@ public class CommentController {
     public List<ReplyCommentRo> getComments(@PathVariable("post-id") Long postId){
         return commentService.getCommentsByPostId(postId);
     }
+
+    @DeleteMapping("/delete/{comment-id}")
+    public void deleteComment(@PathVariable("comment-id") Long commentId){
+        commentService.deleteComment(commentId);
+    }
 }
