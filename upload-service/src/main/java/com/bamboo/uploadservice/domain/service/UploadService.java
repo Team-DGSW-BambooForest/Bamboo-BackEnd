@@ -33,6 +33,8 @@ public class UploadService {
             );
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            amazonS3Client.shutdown();
         }
     }
 
@@ -42,6 +44,8 @@ public class UploadService {
             return amazonS3Client.getUrl(awsProperties.getBucket(), "image/image_"+postId).toString();
         } catch (AmazonS3Exception e) {
             return null;
+        } finally {
+            amazonS3Client.shutdown();
         }
     }
 
