@@ -1,17 +1,21 @@
 package com.bamboo.uploadservice.domain.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
+import com.bamboo.uploadservice.global.config.AWSConfiguration;
 import com.bamboo.uploadservice.global.config.AWSProperties;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UploadService {
 
-    private final AmazonS3Client amazonS3Client;
+    private final AWSConfiguration aws;
     private final AWSProperties awsProperties;
 
     public void uploadImage(Long postId, MultipartFile file) {
@@ -23,23 +27,19 @@ public class UploadService {
             objectMetadata.setContentType(file.getContentType());
             objectMetadata.setContentLength(size);
 
-            amazonS3Client.putObject(
+            aws.amazonS3Client().putObject(
                     new PutObjectRequest(awsProperties.getBucket(), originName, file.getInputStream(), objectMetadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead)
             );
-
-            amazonS3Client.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public String getImageUrl(Long postId) {
-        try {
-            String url = amazonS3Client.getUrl(awsProperties.getBucket(), "image/image_"+postId).toString();
-            amazonS3Client.shutdown();
-            return url;
-        } catch (AmazonS3Exception e) {
+        try (S3Object s3Object = aws.amazonS3Client().getObject(awsProperties.getBucket(), "image/image_" + postId)) {
+            return awsProperties.getUrl() + s3Object.getKey();
+        } catch (AmazonS3Exception | IOException e) {
             return null;
         }
     }
