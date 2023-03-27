@@ -27,20 +27,20 @@ public class UploadService {
                     new PutObjectRequest(awsProperties.getBucket(), originName, file.getInputStream(), objectMetadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead)
             );
+
+            amazonS3Client.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            amazonS3Client.shutdown();
         }
     }
 
     public String getImageUrl(Long postId) {
         try {
-            return amazonS3Client.getUrl(awsProperties.getBucket(), "image/image_"+postId).toString();
+            String url = amazonS3Client.getUrl(awsProperties.getBucket(), "image/image_"+postId).toString();
+            amazonS3Client.shutdown();
+            return url;
         } catch (AmazonS3Exception e) {
             return null;
-        } finally {
-            amazonS3Client.shutdown();
         }
     }
 
