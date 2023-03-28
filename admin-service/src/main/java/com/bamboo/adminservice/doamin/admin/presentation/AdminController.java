@@ -20,4 +20,16 @@ public class AdminController {
         adminService.postStatus(postId, adminRequestDto);
         return new AdminResponseDto(HttpStatus.OK, "성공적으로 처리되었습니다.");
     }
+
+    @AuthToken
+    @DeleteMapping("/delete/{post-id}")
+    public void deletePost(@PathVariable("post-id") Long postId){
+        adminService.deletePost(postId);
+    }
+
+    @AuthToken
+    @DeleteMapping("/delete/{comment-id}")
+    public void deleteComment(@PathVariable("comment-id") Long postId){
+        adminService.deleteComment(postId);
+    }
 }
