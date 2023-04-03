@@ -22,13 +22,13 @@ public class AdminController {
     }
 
     @AuthToken
-    @DeleteMapping("/delete/{post-id}")
+    @DeleteMapping("/post/delete/{post-id}")
     public void deletePost(@PathVariable("post-id") Long postId){
         adminService.deletePost(postId);
     }
 
     @AuthToken
-    @DeleteMapping("/delete/{comment-id}")
+    @DeleteMapping("/comment/delete/{comment-id}")
     public void deleteComment(@PathVariable("comment-id") Long postId){
         adminService.deleteComment(postId);
     }
