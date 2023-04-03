@@ -15,28 +15,23 @@ public class FilterConfig {
         return builder.routes()
                 .route("uesr-service", p ->
                         p.path("/user/**")
-                                .filters(f -> f.filter(authorizationHeaderFilter.apply(new AuthorizationHeaderFilter.Config()))
-                                        .addRequestHeader("user-data", "test"))
+                                .filters(f -> f.filter(authorizationHeaderFilter.apply(new AuthorizationHeaderFilter.Config())))
                                 .uri("http://3.35.127.40:7000/")
                 ).route("post-service", p ->
                         p.path("/post/**")
-                                .filters(f -> f.filter(authorizationHeaderFilter.apply(new AuthorizationHeaderFilter.Config()))
-                                        .addRequestHeader("user-data", "test"))
-                                .uri("http://3.35.240.224:7001")
+                                .filters(f -> f.filter(authorizationHeaderFilter.apply(new AuthorizationHeaderFilter.Config())))
+                                .uri("http://10.80.162.136:7001")
                 ).route("admin-service", p ->
                         p.path("/admin/**")
-                                .filters(f -> f.filter(authorizationHeaderFilter.apply(new AuthorizationHeaderFilter.Config()))
-                                        .addRequestHeader("user-data", "test"))
+                                .filters(f -> f.filter(authorizationHeaderFilter.apply(new AuthorizationHeaderFilter.Config())))
                                 .uri("http://3.35.240.224:7001")
                 ).route("upload-service", p ->
                         p.path("/upload/**")
-                                .filters(f -> f.filter(authorizationHeaderFilter.apply(new AuthorizationHeaderFilter.Config()))
-                                        .addRequestHeader("user-data", "test"))
+                                .filters(f -> f.filter(authorizationHeaderFilter.apply(new AuthorizationHeaderFilter.Config())))
                                 .uri("http://3.35.240.224:7001")
                 ).route("comment-service", p ->
                         p.path("/comment/**")
-                                .filters(f -> f.filter(authorizationHeaderFilter.apply(new AuthorizationHeaderFilter.Config()))
-                                        .addRequestHeader("user-data", "test"))
+                                .filters(f -> f.filter(authorizationHeaderFilter.apply(new AuthorizationHeaderFilter.Config())))
                                 .uri("http://3.35.240.224:7001")
                 )
                 .build();
