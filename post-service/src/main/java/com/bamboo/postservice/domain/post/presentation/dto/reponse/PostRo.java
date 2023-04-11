@@ -1,5 +1,6 @@
 package com.bamboo.postservice.domain.post.presentation.dto.reponse;
 
+import com.bamboo.postservice.domain.post.domain.enums.PostType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,5 +21,6 @@ public class PostRo {
     private String content;
 
     private LocalDateTime createdAt;
+    private PostType type;
 
 }

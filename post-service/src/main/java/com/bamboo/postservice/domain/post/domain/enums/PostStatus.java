@@ -1,4 +1,4 @@
-package com.bamboo.postservice.domain.post.domain.status;
+package com.bamboo.postservice.domain.post.domain.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

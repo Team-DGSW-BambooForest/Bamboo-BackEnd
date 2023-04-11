@@ -2,7 +2,7 @@ package com.bamboo.postservice.domain.post.service;
 
 import com.bamboo.postservice.domain.post.domain.Post;
 import com.bamboo.postservice.domain.post.domain.repository.PostRepository;
-import com.bamboo.postservice.domain.post.domain.status.PostStatus;
+import com.bamboo.postservice.domain.post.domain.enums.PostStatus;
 import com.bamboo.postservice.domain.post.exception.PostEmptyException;
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostListRo;
 import com.bamboo.postservice.domain.post.presentation.dto.reponse.PostRo;
@@ -30,7 +30,6 @@ public class PostService {
 
     @Transactional
     public ResponseEntity<?> creatPost(PostRequest request, String author, String profileImage) {
-
         Post post = Post.builder()
                 .content(request.getContent())
                 .profileImage(profileImage)
@@ -42,6 +41,7 @@ public class PostService {
 
         return ResponseEntity.status(201).body(post.getPostId());
     }
+
     @Transactional(readOnly = true)
     public PostRo getPostById(Long id){
         Post post = postRepository.findById(id)
@@ -53,7 +53,7 @@ public class PostService {
             throw PostNotAllowedException.EXCEPTION;
         }
 
-        return new PostRo(post.getPostId(), post.getAuthor(), post.getProfileImage(), post.getContent(), post.getCreatedAt());
+        return new PostRo(post.getPostId(), post.getAuthor(), post.getProfileImage(), post.getContent(), post.getCreatedAt(), post.getType());
     }
     @Transactional(readOnly = true)
     public PostListRo getAllPost(int page) {

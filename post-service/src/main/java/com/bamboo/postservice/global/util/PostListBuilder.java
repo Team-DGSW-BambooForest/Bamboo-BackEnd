@@ -13,12 +13,11 @@ import static java.util.stream.Collectors.toList;
 public class PostListBuilder {
 
     public PostListRo Builder(Page<Post> posts) {
-
         return PostListRo.builder()
                 .hasMorePage(posts.hasNext())
                 .currentPage(posts.getNumber() + 1)
                 .list(posts.stream().map(it ->
-                        new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt())
+                        new PostRo(it.getPostId(), it.getAuthor(),it.getProfileImage(), it.getContent(), it.getCreatedAt(), it.getType())
                 ).collect(toList()))
                 .build();
 

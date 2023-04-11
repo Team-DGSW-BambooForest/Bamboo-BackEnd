@@ -1,7 +1,7 @@
 package com.bamboo.postservice.domain.post.domain.repository;
 
 import com.bamboo.postservice.domain.post.domain.Post;
-import com.bamboo.postservice.domain.post.domain.status.PostStatus;
+import com.bamboo.postservice.domain.post.domain.enums.PostStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,11 +1,9 @@
 package com.bamboo.postservice.global.interceptor;
 
-import com.bamboo.postservice.global.client.ConfigProperties;
-import com.bamboo.postservice.global.jwt.JwtType;
-import com.bamboo.postservice.global.jwt.JwtUtil;
 import com.bamboo.postservice.global.annotation.AuthToken;
+import com.bamboo.postservice.global.client.ConfigProperties;
+import com.bamboo.postservice.global.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
