@@ -1,8 +1,7 @@
 spring:
   application:
-    name: comment
+    name: comments
   profiles:
     active: config
   config:
     import: optional:configserver:http://43.200.66.133:8888
-
